@@ -83,6 +83,7 @@ Development Environment (Current)
 ✅ Development and testing complete
 
 Designs:
+
 ![](designs/screenshots/actual-auth-screen.png.png)
 
 ![](designs/screenshots/actual-analyzer.png.png)
