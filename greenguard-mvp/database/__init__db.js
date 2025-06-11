@@ -1,5 +1,3 @@
-use greenguard_db;
-
 print("🚀 Initializing GreenGuard Database...");
 
 db.companies.drop();

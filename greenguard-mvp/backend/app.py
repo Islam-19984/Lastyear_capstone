@@ -4,12 +4,9 @@ from pymongo import MongoClient
 from datetime import datetime, timedelta
 import re
 import os
-import random
-import hashlib
 from dotenv import load_dotenv
 import logging
 
-# Import blockchain functionality
 from blockchain_verification import (
     add_verification_to_blockchain,
     add_claim_analysis_to_blockchain,
@@ -48,10 +45,8 @@ users_collection = db.users
 
 
 class UniversalCompanyAnalyzer:
-    """Analyzes any public company for environmental credibility"""
 
     def __init__(self):
-        # Known high-sustainability companies (for bonus scoring)
         self.sustainability_leaders = {
             "patagonia": 0.95,
             "tesla": 0.92,
@@ -80,7 +75,6 @@ class UniversalCompanyAnalyzer:
             "intel": 0.81,
         }
 
-        # Known problematic industries (for penalty scoring)
         self.high_impact_industries = [
             "oil",
             "gas",
@@ -101,32 +95,29 @@ class UniversalCompanyAnalyzer:
         """Analyze any company for environmental credibility"""
         company_lower = company_name.lower().strip()
 
-        # Base analysis
         analysis = {
             "company_name": company_name,
             "found_in_leaders": False,
-            "sustainability_score": 0.5,  # Default neutral score
+            "sustainability_score": 0.5,
             "industry_penalty": 0.0,
             "size_factor": self._estimate_company_size(company_name),
             "reputation_score": 0.5,
             "transparency_bonus": 0.0,
         }
 
-        # Check if company is a known sustainability leader
         for leader, score in self.sustainability_leaders.items():
-            if leader in company_lower or self._fuzzy_match(leader, company_lower):
+            if leader in company_lower or self._fuzzy_match(leader,
+                                                            company_lower):
                 analysis["found_in_leaders"] = True
                 analysis["sustainability_score"] = score
                 analysis["reputation_score"] = min(0.95, score + 0.1)
                 break
 
-        # Apply industry penalties for high-impact sectors
         for industry in self.high_impact_industries:
             if industry in company_lower:
                 analysis["industry_penalty"] = 0.15
                 break
 
-        # Transparency bonus for larger, public companies
         if self._is_likely_public_company(company_name):
             analysis["transparency_bonus"] = 0.1
 
@@ -136,7 +127,6 @@ class UniversalCompanyAnalyzer:
         """Estimate company size based on naming patterns"""
         company_lower = company_name.lower()
 
-        # Large company indicators
         large_indicators = [
             "corp",
             "corporation",
@@ -150,7 +140,6 @@ class UniversalCompanyAnalyzer:
         if any(indicator in company_lower for indicator in large_indicators):
             return "large"
 
-        # Small company indicators
         small_indicators = ["llc", "co", "studio", "shop", "local", "boutique"]
         if any(indicator in company_lower for indicator in small_indicators):
             return "small"
@@ -169,12 +158,12 @@ class UniversalCompanyAnalyzer:
             "limited",
             "group",
         ]
-        return any(indicator in company_lower for indicator in public_indicators)
+        return any(indicator in company_lower for indicator in
+                   public_indicators)
 
     def _fuzzy_match(self, leader, company_name):
-        """Simple fuzzy matching for company names"""
-        # Remove common corporate suffixes for better matching
-        suffixes = ["inc", "corp", "ltd", "llc", "co", "company", "corporation"]
+        suffixes = ["inc", "corp", "ltd", "llc", "co", "company",
+                    "corporation"]
         clean_company = company_name
         for suffix in suffixes:
             clean_company = clean_company.replace(f" {suffix}", "").replace(
@@ -241,7 +230,8 @@ class ClaimDetector:
                         "text": sentence,
                         "keyword": keyword,
                         "confidence": self.calculate_confidence(sentence),
-                        "greenwashing_risk": self.assess_greenwashing_risk(sentence),
+                        "greenwashing_risk":
+                            self.assess_greenwashing_risk(sentence),
                     }
                     claims.append(claim_data)
                     break
@@ -252,17 +242,16 @@ class ClaimDetector:
         """Calculate confidence score for claim detection"""
         words = sentence.lower().split()
         env_word_count = sum(
-            1 for word in words if any(kw in word for kw in self.environmental_keywords)
+            1 for word in words if any(kw in word for kw in self.
+                                       environmental_keywords)
         )
         confidence = min(0.95, 0.3 + (env_word_count / len(words)) * 2)
         return round(confidence, 2)
 
     def assess_greenwashing_risk(self, sentence):
-        """Assess greenwashing risk of a claim"""
         risk_factors = 0
         sentence_lower = sentence.lower()
 
-        # Vague terms increase risk
         vague_terms = [
             "eco",
             "green",
@@ -272,9 +261,9 @@ class ClaimDetector:
             "pure",
             "fresh",
         ]
-        risk_factors += sum(1 for term in vague_terms if term in sentence_lower)
+        risk_factors += sum(1 for term in vague_terms if term in
+                            sentence_lower)
 
-        # Absolute terms without proof increase risk significantly
         absolute_terms = [
             "100%",
             "completely",
@@ -283,14 +272,14 @@ class ClaimDetector:
             "entirely",
             "perfect",
         ]
-        risk_factors += sum(2 for term in absolute_terms if term in sentence_lower)
+        risk_factors += sum(2 for term in absolute_terms if term in
+                            sentence_lower)
 
-        # Lack of specificity increases risk
-        specificity_terms = ["certified", "verified", "approved", "audited", "measured"]
+        specificity_terms = ["certified", "verified", "approved", "audited",
+                             "measured"]
         if not any(cert in sentence_lower for cert in specificity_terms):
             risk_factors += 1
 
-        # Marketing superlatives increase risk
         superlatives = [
             "best",
             "most",
@@ -301,12 +290,10 @@ class ClaimDetector:
         ]
         risk_factors += sum(1 for sup in superlatives if sup in sentence_lower)
 
-        # Calculate final risk score
         risk_score = min(1.0, risk_factors / 8)
         return round(risk_score, 2)
 
 
-# Initialize analyzers
 company_analyzer = UniversalCompanyAnalyzer()
 claim_detector = ClaimDetector()
 
@@ -314,29 +301,21 @@ claim_detector = ClaimDetector()
 def simulate_universal_verification(claim_text, company_name):
     """Universal verification system for any public company"""
 
-    # Analyze the company
     company_analysis = company_analyzer.analyze_company(company_name)
 
-    # Analyze the claim
     claim_analysis = claim_detector.detect_claims(claim_text)
 
-    # Calculate base verification score
     base_score = 5.0
 
-    # Company factors
-    base_score += company_analysis["sustainability_score"] * 3.0  # 0-3 points
-    base_score -= (
-        company_analysis["industry_penalty"] * 10
-    )  # Penalty for high-impact industries
-    base_score += company_analysis["transparency_bonus"] * 5  # Bonus for transparency
+    base_score += company_analysis["sustainability_score"] * 3.0
+    base_score -= company_analysis["industry_penalty"] * 10
+    base_score += company_analysis["transparency_bonus"] * 5
 
-    # Company size adjustments
     if company_analysis["size_factor"] == "large":
-        base_score += 0.5  # Large companies have more resources for sustainability
+        base_score += 0.5
     elif company_analysis["size_factor"] == "small":
-        base_score -= 0.3  # Smaller companies may have limited resources
+        base_score -= 0.3
 
-    # Claim analysis factors
     if claim_analysis:
         avg_risk = sum(c["greenwashing_risk"] for c in claim_analysis) / len(
             claim_analysis
@@ -345,20 +324,14 @@ def simulate_universal_verification(claim_text, company_name):
             claim_analysis
         )
 
-        # Adjust score based on claim quality
-        base_score -= avg_risk * 4.0  # High risk claims reduce score
-        base_score += (
-            avg_confidence - 0.5
-        ) * 2.0  # High confidence claims increase score
+        base_score -= avg_risk * 4.0
+        base_score += (avg_confidence - 0.5) * 2.0
 
-    # Claim specificity analysis
     claim_lower = claim_text.lower()
 
-    # Bonus for specific, measurable claims
     if re.search(r"\d+%|\d+\s*(tons?|kg|pounds?|mw|gwh)", claim_lower):
-        base_score += 1.5  # Quantified claims are better
+        base_score += 1.5
 
-    # Bonus for certification mentions
     cert_keywords = [
         "certified",
         "iso",
@@ -370,7 +343,6 @@ def simulate_universal_verification(claim_text, company_name):
     if any(cert in claim_lower for cert in cert_keywords):
         base_score += 1.2
 
-    # Penalty for vague marketing language
     vague_marketing = [
         "eco-friendly",
         "green",
@@ -381,7 +353,6 @@ def simulate_universal_verification(claim_text, company_name):
     vague_count = sum(1 for term in vague_marketing if term in claim_lower)
     base_score -= vague_count * 0.4
 
-    # Penalty for absolute claims without evidence
     absolute_claims = [
         "100%",
         "completely",
@@ -391,9 +362,8 @@ def simulate_universal_verification(claim_text, company_name):
         "net zero",
     ]
     if any(abs_term in claim_lower for abs_term in absolute_claims):
-        base_score -= 1.5  # Absolute claims need strong evidence
+        base_score -= 1.5
 
-    # Bonus for specific initiatives
     initiative_keywords = [
         "renewable energy",
         "solar",
@@ -404,13 +374,10 @@ def simulate_universal_verification(claim_text, company_name):
     if any(init in claim_lower for init in initiative_keywords):
         base_score += 0.8
 
-    # Ensure score is between 0 and 10
     final_score = max(0, min(10, base_score))
 
-    # Convert to percentage
     score_percentage = final_score / 10
 
-    # Determine risk level and status
     if score_percentage >= 0.8:
         risk_level = "LOW"
         status = "VERIFIED"
@@ -432,12 +399,10 @@ def simulate_universal_verification(claim_text, company_name):
         status = "HIGH RISK"
         trustworthiness = "Not Trustworthy"
 
-    # Generate dynamic recommendations
     recommendations = generate_dynamic_recommendations(
         score_percentage, company_analysis, claim_analysis, claim_text
     )
 
-    # Generate evidence summary
     evidence_summary = generate_universal_evidence_summary(
         company_analysis, claim_analysis, score_percentage, claim_text
     )
@@ -472,10 +437,12 @@ def simulate_universal_verification(claim_text, company_name):
             "company_score": company_analysis["sustainability_score"],
             "claim_risk": sum(c["greenwashing_risk"] for c in claim_analysis)
             / max(len(claim_analysis), 1),
-            "specificity_bonus": 1.5 if re.search(r"\d+%", claim_text.lower()) else 0,
+            "specificity_bonus": 1.5 if re.search(r"\d+%", claim_text.lower())
+            else 0,
             "certification_bonus": (
                 1.2
-                if any(cert in claim_text.lower() for cert in ["certified", "verified"])
+                if any(cert in claim_text.lower() for cert in ["certified",
+                                                               "verified"])
                 else 0
             ),
         },
@@ -517,18 +484,19 @@ def generate_dynamic_recommendations(
             "Blockchain transparency reveals credibility issues",
         ]
 
-    # Add specific recommendations based on company analysis
     if not company_analysis["found_in_leaders"]:
         recommendations.append(
-            f"Company '{company_analysis['company_name']}' not found in sustainability leadership databases"
+            f"Company '{
+                company_analysis[
+                    'company_name']}' not found in sustainability leadership databases"
         )
 
     if company_analysis["industry_penalty"] > 0:
         recommendations.append(
-            "Company operates in high-environmental-impact industry - extra scrutiny advised"
+            "Company operates in high-environmental-impact industry - extra"
+            "scrutiny advised"
         )
 
-    # Add recommendations based on claim analysis
     if claim_analysis:
         avg_risk = sum(c["greenwashing_risk"] for c in claim_analysis) / len(
             claim_analysis
@@ -538,16 +506,16 @@ def generate_dynamic_recommendations(
                 "AI analysis indicates high risk of greenwashing language"
             )
 
-    # Add recommendations based on claim content
     claim_lower = claim_text.lower()
-    if any(abs_term in claim_lower for abs_term in ["100%", "completely", "zero"]):
+    if any(abs_term in claim_lower for abs_term in ["100%", "completely",
+                                                    "zero"]):
         recommendations.append(
             "Absolute claims require strong third-party verification"
         )
 
-    if not any(cert in claim_lower for cert in ["certified", "verified", "audited"]):
+    if not any(cert in claim_lower for cert in ["certified", "verified",
+                                                "audited"]):
         recommendations.append(
-            "No mention of third-party verification - request supporting documentation"
         )
 
     return recommendations
@@ -559,25 +527,27 @@ def generate_universal_evidence_summary(
     """Generate comprehensive evidence summary for any company"""
     evidence_parts = []
 
-    # Company analysis evidence
     if company_analysis["found_in_leaders"]:
         evidence_parts.append(
-            f"Company recognized as sustainability leader (score: {company_analysis['sustainability_score']:.2f})"
+            f"Company recognized as sustainability leader (score:"
+            "{company_analysis['sustainability_score']:.2f})"
         )
     else:
-        evidence_parts.append(f"Company not found in major sustainability databases")
+        evidence_parts.append(f"Company not found in major sustainability"
+                              "databases")
 
     if company_analysis["industry_penalty"] > 0:
-        evidence_parts.append("Company operates in high-environmental-impact industry")
+        evidence_parts.append("Company operates in high-environmental-impact "
+                              "industry")
 
     if company_analysis["transparency_bonus"] > 0:
         evidence_parts.append(
             "Large public company with expected transparency requirements"
         )
 
-    # Claim analysis evidence
     if claim_analysis:
-        evidence_parts.append(f"AI detected {len(claim_analysis)} environmental claims")
+        evidence_parts.append(f"AI detected {len(claim_analysis)}"
+                              "environmental claims")
         avg_risk = sum(c["greenwashing_risk"] for c in claim_analysis) / len(
             claim_analysis
         )
@@ -586,7 +556,6 @@ def generate_universal_evidence_summary(
         elif avg_risk < 0.3:
             evidence_parts.append("Low greenwashing risk indicators")
 
-    # Claim specificity evidence
     claim_lower = claim_text.lower()
     if re.search(r"\d+%|\d+\s*(tons?|kg|pounds?)", claim_lower):
         evidence_parts.append("Claim includes quantifiable metrics")
@@ -596,7 +565,6 @@ def generate_universal_evidence_summary(
     else:
         evidence_parts.append("No third-party verification mentioned")
 
-    # Overall assessment
     if score_percentage >= 0.75:
         evidence_parts.append("Strong overall evidence supporting claim")
     elif score_percentage >= 0.5:
@@ -629,11 +597,13 @@ def generate_alternatives(company_name, category):
             {
                 "name": "Patagonia",
                 "product": "Organic Cotton Apparel",
-                "certifications": ["Fair Trade", "B-Corp", "1% for the Planet"],
+                "certifications": ["Fair Trade", "B-Corp",
+                                   "1% for the Planet"],
                 "sustainability_score": 0.95,
                 "price_range": "Premium",
                 "url": "https://patagonia.com",
-                "why_better": "Verified certifications and transparent supply chain",
+                "why_better": "Verified certifications and transparent supply"
+                "chain",
             },
             {
                 "name": "Eileen Fisher",
@@ -669,7 +639,8 @@ def generate_alternatives(company_name, category):
             {
                 "name": "Method",
                 "product": "Green Cleaning Products",
-                "certifications": ["Cradle to Cradle", "EPA Design for Environment"],
+                "certifications": ["Cradle to Cradle",
+                                   "EPA Design for Environment"],
                 "sustainability_score": 0.82,
                 "price_range": "Affordable",
                 "url": "https://methodhome.com",
@@ -707,7 +678,8 @@ def register_user():
             "is_active": True,
             "profile": {
                 "name": email.split("@")[0],
-                "preferences": {"notifications": True, "analysis_level": "medium"},
+                "preferences": {"notifications": True,
+                                "analysis_level": "medium"},
             },
         }
 
@@ -735,7 +707,8 @@ def register_user():
 
     except Exception as e:
         logger.error(f"Registration error: {str(e)}")
-        return jsonify({"error": "Registration failed", "details": str(e)}), 500
+        return jsonify({"error": "Registration failed", "details": str(e)}),
+    500
 
 
 @app.route("/api/auth/login", methods=["POST"])
@@ -775,7 +748,8 @@ def login_user():
 
         return (
             jsonify(
-                {"success": True, "message": "Login successful", "user": user_response}
+                {"success": True, "message": "Login successful",
+                 "user": user_response}
             ),
             200,
         )
@@ -803,7 +777,6 @@ def health_check():
         client.admin.command("ismaster")
         db_status = "connected"
 
-        # Get blockchain status
         blockchain_stats = get_blockchain_statistics()
         blockchain_status = (
             "operational"
@@ -889,19 +862,23 @@ def detect_claims():
             len(detected_claims), 1
         )
 
-        high_risk_claims = [c for c in detected_claims if c["greenwashing_risk"] >= 0.7]
+        high_risk_claims = [c for c in detected_claims if
+                            c["greenwashing_risk"] >= 0.7]
 
         if avg_risk >= 0.7:
             risk_level = "High"
-            summary = f"Found {len(detected_claims)} environmental claims with high greenwashing risk. These claims appear vague or unsubstantiated."
+            summary = f"Found {len(detected_claims)} environmental claims with"
+            "high greenwashing risk. These claims appear vague or "
+            "unsubstantiated."
         elif avg_risk >= 0.4:
             risk_level = "Medium"
-            summary = f"Found {len(detected_claims)} environmental claims with moderate risk. Some claims may need verification."
+            summary = f"Found {len(detected_claims)} environmental claims with"
+            "moderate risk. Some claims may need verification."
         else:
             risk_level = "Low"
-            summary = f"Found {len(detected_claims)} environmental claims that appear well-substantiated."
+            summary = f"Found {len(detected_claims)} environmental claims that"
+            "appear well-substantiated."
 
-        # Add to blockchain for transparency
         blockchain_id = None
         try:
             blockchain_data = {
@@ -938,12 +915,14 @@ def detect_claims():
 
     except Exception as e:
         logger.error(f"Error detecting claims: {str(e)}")
-        return jsonify({"error": "Internal server error", "details": str(e)}), 500
+        return jsonify({"error": "Internal server error",
+                        "details": str(e)}), 500
 
 
 @app.route("/api/claims/verify", methods=["POST"])
 def verify_claim():
-    """Verify environmental claims for ANY public company with blockchain transparency"""
+    """Verify environmental claims for ANY public company with blockchain"""
+    """transparency"""
     try:
         data = request.get_json()
 
@@ -960,10 +939,9 @@ def verify_claim():
         if not company_name:
             return jsonify({"error": "Company name is required"}), 400
 
-        # Use universal verification system
-        verification_results = simulate_universal_verification(claim_text, company_name)
+        verification_results = simulate_universal_verification(claim_text,
+                                                               company_name)
 
-        # Prepare data for blockchain
         blockchain_verification_data = {
             "company_name": company_name,
             "claim": claim_text,
@@ -978,7 +956,6 @@ def verify_claim():
             "user_email": user_email,
         }
 
-        # Store in MongoDB
         verification_doc = {
             "claim_text": claim_text,
             "company_name": company_name,
@@ -1000,10 +977,10 @@ def verify_claim():
         except Exception as e:
             logger.error(f"Error storing verification: {e}")
 
-        # Add to blockchain for immutable transparency
         blockchain_id = None
         try:
-            blockchain_id = add_verification_to_blockchain(blockchain_verification_data)
+            blockchain_id = add_verification_to_blockchain(
+                blockchain_verification_data)
             logger.info(f"Verification added to blockchain: {blockchain_id}")
         except Exception as e:
             logger.error(f"Error adding verification to blockchain: {str(e)}")
@@ -1012,11 +989,15 @@ def verify_claim():
         analysis = (
             f"**Status: {verification_results['status']}**\n\n"
             + f"**Analysis:**\n"
-            + f"Based on our verification, this claim appears to be {verification_results['status'].lower()}. "
-            + f"Overall verification score: {verification_results['overall_score']:.1%}\n\n"
-            + f"**Evidence:**\n"
-            + "\n".join([f"* {rec}" for rec in verification_results["recommendations"]])
-            + f"\n\n**Blockchain Security:** {'✅ Secured' if blockchain_id else '⚠️ Not secured'}"
+            + f"Based on our verification, this claim appears to be {
+                verification_results['status'].lower()}. "
+            + f"Overall verification score: {verification_results[
+                'overall_score']:.1%}\n\n"
+            + f"**Evidence:**\n" + "\n".join([f"* {
+                rec}" for rec in verification_results[
+                "recommendations"]])
+            + f"\n\n**Blockchain Security:** {
+                '✅ Secured' if blockchain_id else '⚠️ Not secured'}"
         )
 
         response_data = {
@@ -1036,19 +1017,21 @@ def verify_claim():
         }
 
         logger.info(
-            f"Universal verification completed for {company_name}: {verification_results['overall_score']:.1%} ({verification_results['status']})"
+            f"Universal verification completed for {company_name}: {
+                verification_results['overall_score']:.1%} ({
+                    verification_results['status']})"
         )
 
         return jsonify(response_data)
 
     except Exception as e:
         logger.error(f"Error verifying claim: {str(e)}")
-        return jsonify({"error": "Internal server error", "details": str(e)}), 500
+        return jsonify({"error": "Internal server error", "details": str(e)}),
+    500
 
 
 @app.route("/api/alternatives/suggest", methods=["POST"])
 def suggest_alternatives():
-    """Suggest sustainable alternatives"""
     try:
         data = request.get_json()
 
@@ -1076,7 +1059,8 @@ def suggest_alternatives():
 
     except Exception as e:
         logger.error(f"Error suggesting alternatives: {str(e)}")
-        return jsonify({"error": "Internal server error", "details": str(e)}), 500
+        return jsonify({"error": "Internal server error", "details": str(e)}),
+    500
 
 
 @app.route("/api/community/submit", methods=["POST"])
@@ -1095,7 +1079,8 @@ def submit_community_feedback():
 
         if not all([feedback_type, company, content]):
             error_msg = (
-                "feedback_type/type, company, and content/description are required"
+                "feedback_type/type, company, "
+                "and content/description are required"
             )
             return jsonify({"error": error_msg}), 400
 
@@ -1133,7 +1118,8 @@ def submit_community_feedback():
 
     except Exception as e:
         logger.error(f"Error submitting community feedback: {str(e)}")
-        return jsonify({"error": "Internal server error", "details": str(e)}), 500
+        return jsonify({"error": "Internal server error", "details": str(e)}),
+    500
 
 
 def calculate_credibility_score(content, feedback_type):
@@ -1165,7 +1151,6 @@ def calculate_credibility_score(content, feedback_type):
     return round(min(1.0, base_score), 2)
 
 
-# Blockchain-specific routes
 @app.route("/api/blockchain/stats", methods=["GET"])
 def get_blockchain_stats():
     """Get comprehensive blockchain network statistics"""
@@ -1265,7 +1250,9 @@ def get_user_verification_history(user_email):
                     "user_email": user_email,
                     "verification_history": history,
                     "total_verifications": len(history),
-                    "transparency_note": "All user verifications are recorded on blockchain for transparency",
+                    "transparency_note":
+                        "All user verifications are recorded on blockchain for"
+                        "transparency",
                 }
             ),
             200,
@@ -1302,7 +1289,6 @@ def get_analytics():
 
         greenwashing_rate = round(high_risk_claims / max(total_claims, 1), 2)
 
-        # Get blockchain statistics
         try:
             blockchain_stats = get_blockchain_statistics()
         except Exception as e:
@@ -1310,7 +1296,9 @@ def get_analytics():
             blockchain_stats = {"total_blocks": 0, "verification_blocks": 0}
 
         logger.info(
-            f"Real-time stats - Claims: {total_claims}, Verifications: {total_verifications}, Reports: {total_community_reports}, Users: {total_users}"
+            f"Real-time stats - Claims: {total_claims}, Verifications: {
+                total_verifications}, Reports: {
+                    total_community_reports}, Users: {total_users}"
         )
 
         return jsonify(
@@ -1337,10 +1325,12 @@ def get_analytics():
                     "companies_on_blockchain": blockchain_stats.get(
                         "companies_on_blockchain", 0
                     ),
-                    "chain_valid": blockchain_stats.get("chain_integrity", {}).get(
+                    "chain_valid": blockchain_stats.get("chain_integrity",
+                                                        {}).get(
                         "valid", False
                     ),
-                    "network_status": blockchain_stats.get("network_status", "unknown"),
+                    "network_status": blockchain_stats.get("network_status",
+                                                           "unknown"),
                 },
                 "data_source": "real_time_mongodb_blockchain",
                 "transparency_features": {
@@ -1353,7 +1343,8 @@ def get_analytics():
 
     except Exception as e:
         logger.error(f"Error getting analytics: {str(e)}")
-        return jsonify({"error": "Internal server error", "details": str(e)}), 500
+        return jsonify({"error": "Internal server error", "details": str(e)}),
+    500
 
 
 @app.route("/api/admin/debug-stats", methods=["GET"])
@@ -1389,7 +1380,6 @@ def debug_statistics():
             {"detected_timestamp": {"$gte": seven_days_ago}}
         )
 
-        # Get blockchain statistics
         try:
             blockchain_stats = get_blockchain_statistics()
         except Exception as e:
@@ -1400,10 +1390,17 @@ def debug_statistics():
             {
                 "success": True,
                 "dashboard_numbers_explanation": {
-                    "claims_analyzed": f"From claims collection: {claims_count} documents",
-                    "companies_verified": f"From verifications collection: {verifications_count} documents",
-                    "community_reports": f"From user_submissions collection: {submissions_count} documents",
-                    "greenwashing_detected": f"High-risk claims (>=0.7): {high_risk_claims} documents",
+                    "claims_analyzed":
+                        f"From claims collection: {claims_count} documents",
+                    "companies_verified":
+                        f"From verifications collection: {verifications_count}"
+                        "documents",
+                    "community_reports":
+                        f"From user_submissions collection: {
+                            submissions_count} documents",
+                    "greenwashing_detected":
+                        f"High-risk claims (>=0.7): {high_risk_claims}"
+                        "documents",
                 },
                 "detailed_counts": {
                     "claims": claims_count,
@@ -1421,7 +1418,8 @@ def debug_statistics():
                     "sample_user": clean_doc(sample_user),
                 },
                 "blockchain_info": blockchain_stats,
-                "note": "This shows exactly what data is in your MongoDB collections and blockchain",
+                "note": "This shows exactly what data is in your MongoDB"
+                "collections and blockchain",
                 "system_features": {
                     "universal_company_support": True,
                     "dynamic_scoring": True,
@@ -1435,7 +1433,8 @@ def debug_statistics():
 
     except Exception as e:
         logger.error(f"Error debugging statistics: {str(e)}")
-        return jsonify({"error": "Failed to debug statistics", "details": str(e)}), 500
+        return jsonify({"error": "Failed to debug statistics",
+                        "details": str(e)}), 500
 
 
 @app.route("/api/admin/reset-stats", methods=["POST"])
@@ -1460,14 +1459,17 @@ def reset_statistics():
                 "success": True,
                 "message": "Statistics reset successfully",
                 "cleared_counts": before_counts,
-                "note": "All analytics will now show real-time data from new user interactions. Blockchain records remain immutable.",
-                "blockchain_note": "Blockchain data cannot be deleted - this ensures transparency and immutability",
+                "note": "All analytics will now show real-time data from new"
+                "user interactions. Blockchain records remain immutable.",
+                "blockchain_note": "Blockchain data cannot be deleted - this"
+                "ensures transparency and immutability",
             }
         )
 
     except Exception as e:
         logger.error(f"Error resetting statistics: {str(e)}")
-        return jsonify({"error": "Failed to reset statistics", "details": str(e)}), 500
+        return jsonify({"error": "Failed to reset statistics",
+                        "details": str(e)}), 500
 
 
 @app.errorhandler(404)
@@ -1514,26 +1516,31 @@ def bad_request(error):
 def init_database():
     """Initialize database with proper indexes"""
     try:
-        # Create indexes for better performance
-        claims_collection.create_index([("detected_timestamp", -1)], background=True)
-        claims_collection.create_index([("greenwashing_risk", -1)], background=True)
+        claims_collection.create_index([("detected_timestamp", -1)],
+                                       background=True)
+        claims_collection.create_index([("greenwashing_risk", -1)],
+                                       background=True)
         claims_collection.create_index([("keyword", 1)], background=True)
 
-        verifications_collection.create_index([("company_name", 1)], background=True)
+        verifications_collection.create_index([("company_name", 1)],
+                                              background=True)
         verifications_collection.create_index(
             [("verification_timestamp", -1)], background=True
         )
         verifications_collection.create_index(
             [("verification_score", -1)], background=True
         )
-        verifications_collection.create_index([("user_email", 1)], background=True)
+        verifications_collection.create_index([("user_email", 1)],
+                                              background=True)
 
         user_submissions_collection.create_index(
             [("submission_timestamp", -1)], background=True
         )
-        user_submissions_collection.create_index([("company", 1)], background=True)
+        user_submissions_collection.create_index([("company", 1)],
+                                                 background=True)
 
-        users_collection.create_index([("email", 1)], unique=True, background=True)
+        users_collection.create_index([("email", 1)], unique=True,
+                                      background=True)
         users_collection.create_index([("created_at", -1)], background=True)
 
         logger.info("Database indexes created successfully")
@@ -1550,12 +1557,14 @@ if __name__ == "__main__":
     host = os.getenv("HOST", "127.0.0.1")
 
     logger.info(
-        f"Starting GreenGuard Universal Verification API with Blockchain on {host}:{port}"
+        f"Starting GreenGuard Universal Verification API with Blockchain on {
+            host}:{port}"
     )
     logger.info(f"Debug mode: {debug}")
     logger.info(f"Database: {DATABASE_NAME}")
     logger.info(
-        "Features: Universal Company Support, Dynamic AI Analysis, Global Verification, Blockchain Transparency"
+        "Features: Universal Company Support, Dynamic AI Analysis, Global"
+        "Verification, Blockchain Transparency"
     )
 
     app.run(host=host, port=port, debug=debug)
