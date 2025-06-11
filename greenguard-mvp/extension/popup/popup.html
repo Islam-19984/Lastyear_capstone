@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GreenGuard - AI-Powered Environmental Claim Verification</title>
+    <style>
+      body {
+        width: 480px !important;
+        max-height: 650px !important;
+        min-height: 600px !important;
+        overflow-y: auto !important;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        color: #333;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 0 0 15px 15px;
+        margin-bottom: 20px;
+      }
+
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo-icon {
+        font-size: 24px;
+      }
+
+      .logo h1 {
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .ai-badge {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 10px;
+        margin-left: 10px;
+      }
+
+      .tab-navigation {
+        display: flex;
+        background: white;
+        border-radius: 10px;
+        padding: 5px;
+        margin: 0 20px 20px 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .tab-btn {
+        flex: 1;
+        background: none;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        color: #666;
+      }
+
+      .tab-btn.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .tab-btn:hover {
+        background: rgba(102, 126, 234, 0.1);
+      }
+
+      .tab-content {
+        display: none;
+        padding: 0 20px;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #555;
+        font-size: 12px;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #e1e8ed;
+        border-radius: 8px;
+        font-size: 12px;
+        transition: border-color 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        width: 100%;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-secondary {
+        background: #95a5a6;
+      }
+
+      .btn-secondary:hover {
+        background: #7f8c8d;
+      }
+
+      .result-card {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .result-card h3 {
+        color: #667eea;
+        margin-bottom: 10px;
+        font-size: 16px;
+      }
+
+      .risk-indicator,
+      .trust-indicator {
+        margin-bottom: 10px;
+        font-size: 12px;
+      }
+
+      .summary,
+      .verification-summary {
+        margin-bottom: 10px;
+      }
+
+      .summary h4,
+      .verification-summary h4 {
+        font-size: 12px;
+        margin-bottom: 5px;
+        color: #555;
+      }
+
+      .summary p,
+      .verification-summary p {
+        font-size: 11px;
+        line-height: 1.4;
+        color: #666;
+      }
+
+      .evidence ul {
+        padding-left: 15px;
+      }
+
+      .evidence li {
+        font-size: 10px;
+        margin-bottom: 3px;
+        color: #666;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .stat-number {
+        font-size: 20px;
+        font-weight: bold;
+        color: #667eea;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        font-size: 10px;
+        color: #666;
+        font-weight: 500;
+      }
+
+      #authSection {
+        padding: 20px;
+      }
+
+      .auth-container {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .auth-title {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #667eea;
+        font-size: 18px;
+      }
+
+      .auth-switch {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 11px;
+      }
+
+      .auth-switch a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .auth-switch a:hover {
+        text-decoration: underline;
+      }
+
+      .education-content {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .education-content h3 {
+        color: #667eea;
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
+
+      .education-content p,
+      .education-content li {
+        font-size: 11px;
+        line-height: 1.4;
+        color: #666;
+        margin-bottom: 8px;
+      }
+
+      .education-content ul {
+        padding-left: 15px;
+      }
+
+      .user-info {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .logout-btn {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 10px;
+        text-decoration: underline;
+      }
+
+      .features-section,
+      .footer {
+        display: none !important;
+      }
+
+      .main-container {
+        margin-top: 0 !important;
+      }
+
+      #analysisResults,
+      #verificationResults {
+        display: none;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 20px;
+        color: #667eea;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="nav-container">
+        <div class="logo">
+          <span class="logo-icon">🛡️</span>
+          <h1>GreenGuard</h1>
+          <span class="ai-badge">AI-Powered</span>
+        </div>
+        <div class="user-info" id="userInfo" style="display: none">
+          <span id="userEmail"></span>
+          <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="authSection" style="display: none">
+      <div class="auth-container">
+        <div id="signupFormContainer">
+          <h2 class="auth-title">Create Account</h2>
+          <form id="signupForm">
+            <div class="form-group">
+              <label for="signupEmail">Email Address</label>
+              <input type="email" id="signupEmail" name="email" required />
+            </div>
+            <div class="form-group">
+              <label for="signupPassword">Password</label>
+              <input
+                type="password"
+                id="signupPassword"
+                name="password"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                required
+              />
+            </div>
+            <button type="submit" class="btn">Create Account</button>
+          </form>
+          <div class="auth-switch">
+            Already have an account? <a href="#" id="switchToSignin">Sign In</a>
+          </div>
+        </div>
+
+        <div id="signinFormContainer" style="display: none">
+          <h2 class="auth-title">Welcome Back</h2>
+          <form id="signinForm">
+            <div class="form-group">
+              <label for="signinEmail">Email Address</label>
+              <input type="email" id="signinEmail" name="email" required />
+            </div>
+            <div class="form-group">
+              <label for="signinPassword">Password</label>
+              <input
+                type="password"
+                id="signinPassword"
+                name="password"
+                required
+              />
+            </div>
+            <button type="submit" class="btn">Sign In</button>
+          </form>
+          <div class="auth-switch">
+            Don't have an account? <a href="#" id="switchToSignup">Sign Up</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="dashboardSection" style="display: none">
+      <div class="tab-navigation">
+        <button class="tab-btn active" data-tab="analyzer">Analyzer</button>
+        <button class="tab-btn" data-tab="verification">Verify</button>
+        <button class="tab-btn" data-tab="education">Learn</button>
+        <button class="tab-btn" data-tab="community">Report</button>
+        <button class="tab-btn" data-tab="dashboard">Stats</button>
+      </div>
+
+      <div id="analyzerTab" class="tab-content active">
+        <form id="analysisForm">
+          <div class="form-group">
+            <label for="analysisContent"
+              >Environmental Content to Analyze</label
+            >
+            <textarea
+              id="analysisContent"
+              name="content"
+              placeholder="Paste environmental claims, company statements, or marketing content here..."
+              required
+            ></textarea>
+          </div>
+          <button type="submit" class="btn">Analyze Claims</button>
+        </form>
+        <div id="analysisResults"></div>
+      </div>
+
+      <div id="verificationTab" class="tab-content">
+        <form id="verificationForm">
+          <div class="form-group">
+            <label for="companyName">Company Name</label>
+            <input
+              type="text"
+              id="companyName"
+              name="company"
+              placeholder="e.g., Tesla, Patagonia, Shell..."
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="claimText">Environmental Claim</label>
+            <textarea
+              id="claimText"
+              name="claim"
+              placeholder="e.g., 'We are carbon neutral by 2030'"
+              required
+            ></textarea>
+          </div>
+          <button type="submit" class="btn">Verify Claim</button>
+        </form>
+        <div id="verificationResults"></div>
+      </div>
+
+      <div id="educationTab" class="tab-content">
+        <div class="education-content">
+          <h3>🎯 What is Greenwashing?</h3>
+          <p>
+            Greenwashing is the practice of making misleading claims about
+            environmental benefits to appear more sustainable than they actually
+            are.
+          </p>
+        </div>
+
+        <div class="education-content">
+          <h3>🚨 Common Greenwashing Tactics</h3>
+          <ul>
+            <li>
+              <strong>Vague Language:</strong> "Eco-friendly" without specific
+              details
+            </li>
+            <li>
+              <strong>Misleading Labels:</strong> "Natural" doesn't mean
+              environmentally safe
+            </li>
+            <li>
+              <strong>Hidden Trade-offs:</strong> Highlighting one green
+              attribute while ignoring others
+            </li>
+            <li>
+              <strong>False Claims:</strong> Unsubstantiated environmental
+              benefits
+            </li>
+            <li>
+              <strong>Irrelevant Claims:</strong> Promoting absence of harmful
+              substances that are already banned
+            </li>
+          </ul>
+        </div>
+
+        <div class="education-content">
+          <h3>✅ How to Spot Authentic Sustainability</h3>
+          <ul>
+            <li>Look for specific, measurable commitments</li>
+            <li>Check for third-party certifications</li>
+            <li>Research the company's overall practices</li>
+            <li>Verify claims with independent sources</li>
+            <li>Be skeptical of perfect environmental claims</li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="communityTab" class="tab-content">
+        <form id="communityForm">
+          <div class="form-group">
+            <label for="reportType">Report Type</label>
+            <select id="reportType" name="type" required>
+              <option value="">Select type...</option>
+              <option value="greenwashing">Suspected Greenwashing</option>
+              <option value="misleading_claim">
+                Misleading Environmental Claim
+              </option>
+              <option value="false_certification">False Certification</option>
+              <option value="other">Other Environmental Concern</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="reportCompany">Company/Brand</label>
+            <input
+              type="text"
+              id="reportCompany"
+              name="company"
+              placeholder="Company name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="reportDescription">Description</label>
+            <textarea
+              id="reportDescription"
+              name="description"
+              placeholder="Describe the environmental claim or concern..."
+              required
+            ></textarea>
+          </div>
+          <button type="submit" class="btn">Submit Report</button>
+        </form>
+      </div>
+
+      <div id="dashboardTab" class="tab-content">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number" id="claimsAnalyzed">0</div>
+            <div class="stat-label">Claims Analyzed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="companiesVerified">0</div>
+            <div class="stat-label">Companies Verified</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="communityReports">0</div>
+            <div class="stat-label">Community Reports</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="greenwashingDetected">0</div>
+            <div class="stat-label">Greenwashing Detected</div>
+          </div>
+        </div>
+
+        <div class="education-content">
+          <h3>📊 Your Impact</h3>
+          <p>
+            Every analysis and verification helps build a more transparent and
+            sustainable future. Thank you for being part of the GreenGuard
+            community!
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

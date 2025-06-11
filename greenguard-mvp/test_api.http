@@ -1,0 +1,290 @@
+ GreenGuard API Testing Suite
+ Make sure backend server is running: python backend/app.py
+Use VS Code REST Client extension to run these tests
+
+ Variables
+@baseUrl = http://localhost:5000
+@apiVersion = v1
+
+1. Health Check - Verify server is running
+GET {{baseUrl}}/api/health
+Content-Type: application/json
+
+
+2. Basic Claim Detection - Test with simple environmental claims
+POST {{baseUrl}}/api/claims/detect
+Content-Type: application/json
+
+{
+  "text": "Our product is made from 100% sustainable materials and is completely carbon neutral. We use only eco-friendly processes.",
+  "url": "https://example.com/product"
+}
+
+3. High-Risk Greenwashing Detection - Test with suspicious claims
+POST {{baseUrl}}/api/claims/detect
+Content-Type: application/json
+
+{
+  "text": "This is the most eco-friendly product ever made! 100% green, natural, and sustainable. Perfect for the environment! Revolutionary eco technology!",
+  "url": "https://greenwashing-example.com"
+}
+
+
+4. Low-Risk Legitimate Claims - Test with verified language
+POST {{baseUrl}}/api/claims/detect
+Content-Type: application/json
+
+{
+  "text": "Our jacket is made from GOTS certified organic cotton and Fair Trade verified materials. Third-party audited supply chain with documented carbon footprint reduction.",
+  "url": "https://legitimate-company.com"
+}
+
+
+5. Empty Text Error Handling
+POST {{baseUrl}}/api/claims/detect
+Content-Type: application/json
+
+{
+  "text": "",
+  "url": "https://example.com"
+}
+
+6. Missing Text Field Error Handling
+POST {{baseUrl}}/api/claims/detect
+Content-Type: application/json
+
+{
+  "url": "https://example.com"
+}
+
+7. Large Text Analysis - Test with longer content
+POST {{baseUrl}}/api/claims/detect
+Content-Type: application/json
+
+{
+  "text": "Welcome to our sustainable fashion brand! We are committed to creating eco-friendly clothing that doesn't compromise on style. Our latest collection features organic cotton t-shirts that are not only comfortable but also environmentally responsible. Each piece is made using renewable energy in our carbon-neutral facilities. We believe in transparency, which is why we provide detailed sustainability reports for all our products. Our supply chain is fully traceable, and we work only with Fair Trade certified suppliers. Join us in making fashion more sustainable for future generations. Every purchase supports reforestation projects and clean water initiatives in developing countries.",
+  "url": "https://sustainable-fashion.com/about"
+}
+
+8. Claim Verification - Test verification engine
+POST {{baseUrl}}/api/claims/verify
+Content-Type: application/json
+
+{
+  "claim_text": "carbon neutral production",
+  "company_name": "EcoFashion Co"
+}
+
+ 9. Claim Verification - High credibility company
+POST {{baseUrl}}/api/claims/verify
+Content-Type: application/json
+
+{
+  "claim_text": "100% renewable energy verified by third-party audits",
+  "company_name": "GreenTech Inc"
+}
+
+10. Claim Verification - Missing claim text
+POST {{baseUrl}}/api/claims/verify
+Content-Type: application/json
+
+{
+  "company_name": "Test Company"
+}
+
+11. Alternative Suggestions - Fashion Category
+POST {{baseUrl}}/api/alternatives/suggest
+Content-Type: application/json
+
+{
+  "company_name": "Fast Fashion Brand",
+  "product_category": "fashion"
+}
+
+ 12. Alternative Suggestions - General Category
+POST {{baseUrl}}/api/alternatives/suggest
+Content-Type: application/json
+
+{
+  "company_name": "Generic Company",
+  "product_category": "general"
+}
+
+13. Alternative Suggestions - No body (error test)
+POST {{baseUrl}}/api/alternatives/suggest
+Content-Type: application/json
+
+14. Community Feedback - Dispute Submission
+POST {{baseUrl}}/api/community/submit
+Content-Type: application/json
+
+{
+  "claim_id": "test-claim-id-123",
+  "feedback_type": "dispute",
+  "content": "I bought this product and found it contains synthetic materials despite claiming to be 100% natural. I have the receipt and lab test results showing polyester content.",
+  "user_id": "test-user-sarah"
+}
+
+15. Community Feedback - Support Submission
+POST {{baseUrl}}/api/community/submit
+Content-Type: application/json
+
+{
+  "claim_id": "test-claim-id-456",
+  "feedback_type": "support",
+  "content": "I can confirm this company's sustainability claims. I visited their facility and verified their renewable energy setup and waste management processes.",
+  "user_id": "test-user-expert"
+}
+
+ 16. Community Feedback - Additional Information
+POST {{baseUrl}}/api/community/submit
+Content-Type: application/json
+
+{
+  "claim_id": "test-claim-id-789",
+  "feedback_type": "additional_info",
+  "content": "According to the latest CDP report, this company has reduced emissions by 30% since 2020. Here's the source: https://cdp.net/example-report",
+  "user_id": "test-user-researcher"
+}
+
+17. Community Feedback - Missing Required Fields
+POST {{baseUrl}}/api/community/submit
+Content-Type: application/json
+
+{
+  "feedback_type": "dispute",
+  "content": "This should fail due to missing claim_id"
+}
+
+18. Analytics and Statistics
+GET {{baseUrl}}/api/analytics/stats
+Content-Type: application/json
+
+19. Test Multiple Claims in One Text
+POST {{baseUrl}}/api/claims/detect
+Content-Type: application/json
+
+{
+  "text": "Our sustainable clothing line is made from 100% organic cotton. We are carbon neutral and use renewable energy. All packaging is biodegradable and we are Fair Trade certified.",
+  "url": "https://multi-claims-example.com"
+}
+
+20. Test Non-Environmental Text (should find no claims)
+POST {{baseUrl}}/api/claims/detect
+Content-Type: application/json
+
+{
+  "text": "This smartphone features a 6.1-inch display, 128GB storage, and 12MP camera. Available in multiple colors with fast shipping.",
+  "url": "https://tech-product.com"
+}
+
+21. Test Mixed Content (some environmental, some not)
+POST {{baseUrl}}/api/claims/detect
+Content-Type: application/json
+
+{
+  "text": "Our new laptop computer delivers high performance with Intel processors. The packaging is made from recycled materials and we use renewable energy in manufacturing. Features include 16GB RAM and 512GB SSD.",
+  "url": "https://mixed-content.com"
+}
+
+22. Test Fashion Industry Specific Claims
+POST {{baseUrl}}/api/claims/detect
+Content-Type: application/json
+
+{
+  "text": "Introducing our new eco-friendly fashion collection! Made with sustainable fabrics, ethically sourced materials, and produced in carbon-neutral facilities. GOTS certified organic cotton, Fair Trade approved, and zero waste manufacturing process.",
+  "url": "https://fashion-brand.com"
+}
+
+23. Test Energy Industry Claims
+POST {{baseUrl}}/api/claims/detect
+Content-Type: application/json
+
+{
+  "text": "Our clean energy solutions provide 100% renewable power from wind and solar. Carbon-free electricity generation with net-zero emissions. Certified green energy provider.",
+  "url": "https://energy-company.com"
+}
+
+24. Test Food Industry Claims
+POST {{baseUrl}}/api/claims/detect
+Content-Type: application/json
+
+{
+  "text": "Our organic food products are sustainably grown using natural farming methods. Pesticide-free, non-GMO, and environmentally responsible. Carbon neutral delivery and biodegradable packaging.",
+  "url": "https://food-company.com"
+}
+
+25. Test Invalid JSON (should return 400 error)
+POST {{baseUrl}}/api/claims/detect
+Content-Type: application/json
+
+{
+  "text": "This is invalid JSON - missing closing brace",
+  "url": "https://example.com"
+}
+
+26. Test Very Short Text (edge case)
+POST {{baseUrl}}/api/claims/detect
+Content-Type: application/json
+
+{
+  "text": "Eco",
+  "url": "https://example.com"
+}
+
+27. Test Text with Special Characters
+POST {{baseUrl}}/api/claims/detect
+Content-Type: application/json
+
+{
+  "text": "Our products are 100% sustainable! Made with eco-friendly materials & renewable energy. #ClimateAction #Sustainability 🌱",
+  "url": "https://special-chars.com"
+}
+
+28. Test Verification with Different Risk Levels
+POST {{baseUrl}}/api/claims/verify
+Content-Type: application/json
+
+{
+  "claim_text": "GOTS certified organic cotton with third-party verification",
+  "company_name": "Verified Sustainable Brand"
+}
+
+29. Test Community Feedback with Long Content
+POST {{baseUrl}}/api/community/submit
+Content-Type: application/json
+
+{
+  "claim_id": "long-content-test",
+  "feedback_type": "additional_info",
+  "content": "I have extensively researched this company's sustainability practices over the past 6 months. Their claims about carbon neutrality are backed by verified carbon offset certificates from Gold Standard projects. They have third-party audits from SGS and their supply chain transparency report shows detailed tracking of materials from farm to finished product. The renewable energy claims are verified through Green-e certification and they publish monthly energy usage reports. I recommend this as a legitimate sustainable option based on documented evidence.",
+  "user_id": "detailed-researcher"
+}
+
+30. Final Health Check
+GET {{baseUrl}}/api/health
+Content-Type: application/json
+
+Expected Results Summary:
+✅ Health checks should return status: "healthy"
+✅ Claim detection should identify environmental keywords and calculate risk scores
+✅ High-risk texts should have greenwashing_risk > 0.7
+✅ Low-risk legitimate texts should have greenwashing_risk < 0.4
+✅ Verification should return risk levels and detailed recommendations
+✅ Alternatives should return relevant sustainable product options
+✅ Community submissions should calculate credibility scores
+✅ Analytics should return current database statistics
+❌ Error cases should return appropriate 400/500 status codes
+✅ Edge cases (empty text, special chars) should be handled gracefully
+
+Test Results Checklist:
+[ ] Backend server starts without errors
+[ ] Health endpoint returns "healthy" status
+[ ] Claim detection works for various text types
+[ ] Risk scoring differentiates between legitimate and suspicious claims
+[ ] Verification provides detailed analysis
+[ ] Alternatives API returns relevant suggestions
+[ ] Community features accept and score feedback
+[ ] Analytics provides meaningful statistics
+[ ] Error handling works for invalid requests
+[ ] Database stores and retrieves data correctly

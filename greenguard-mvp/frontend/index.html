@@ -1,0 +1,2073 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GreenGuard - AI-Powered Environmental Claim Verification</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        color: #333;
+      }
+
+      /* Header Navigation */
+      .header {
+        background: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+      }
+
+      .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        height: 70px;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        font-size: 24px;
+        font-weight: bold;
+        color: #2ecc71;
+      }
+
+      .logo-icon {
+        font-size: 28px;
+        margin-right: 10px;
+      }
+
+      .nav-menu {
+        display: flex;
+        list-style: none;
+        gap: 30px;
+      }
+
+      .nav-item {
+        position: relative;
+      }
+
+      .nav-link {
+        text-decoration: none;
+        color: #666;
+        font-weight: 500;
+        padding: 10px 20px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .nav-link:hover {
+        color: #2ecc71;
+        background: rgba(46, 204, 113, 0.1);
+      }
+
+      .nav-link.active {
+        background: #3498db;
+        color: white;
+      }
+
+      .user-section {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .user-info {
+        text-align: right;
+      }
+
+      .user-welcome {
+        font-size: 14px;
+        color: #666;
+      }
+
+      .user-email {
+        font-size: 12px;
+        color: #999;
+      }
+
+      .logout-btn {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .logout-btn:hover {
+        background: #c0392b;
+      }
+
+      .main-container {
+        margin-top: 70px;
+        min-height: calc(100vh - 70px);
+      }
+
+      .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 60px 0;
+        text-align: center;
+      }
+
+      .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .hero-title {
+        font-size: 48px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .hero-subtitle {
+        font-size: 20px;
+        opacity: 0.9;
+        line-height: 1.6;
+        margin-bottom: 40px;
+      }
+
+      .features-section {
+        padding: 80px 0;
+        background: white;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 40px;
+        margin-top: 60px;
+      }
+
+      .feature-card {
+        background: white;
+        padding: 40px 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid #f0f0f0;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .feature-icon {
+        font-size: 48px;
+        color: #2ecc71;
+        margin-bottom: 20px;
+      }
+
+      .feature-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #2c3e50;
+      }
+
+      .feature-description {
+        color: #666;
+        line-height: 1.6;
+        font-size: 16px;
+      }
+
+      .dashboard-section {
+        padding: 60px 0;
+        background: #f8f9fa;
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 36px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 50px;
+      }
+
+      .dashboard-content {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-top: 40px;
+      }
+
+      .tab-navigation {
+        display: flex;
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 5px;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+
+      .tab-btn {
+        flex: 1;
+        padding: 15px 20px;
+        border: none;
+        background: transparent;
+        border-radius: 10px;
+        font-weight: 600;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        min-width: 120px;
+      }
+
+      .tab-btn.active {
+        background: white;
+        color: #2ecc71;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .tab-content {
+        min-height: 400px;
+      }
+
+      .tab-panel {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .tab-panel.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .form-group {
+        margin-bottom: 25px;
+      }
+
+      .form-label {
+        display: block;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: #3498db;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+      }
+
+      .textarea-input {
+        min-height: 120px;
+        resize: vertical;
+        font-family: inherit;
+      }
+
+      .btn {
+        padding: 15px 30px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        color: white;
+      }
+
+      .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(46, 204, 113, 0.3);
+      }
+
+      .result-card {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 25px;
+        border-left: 5px solid #3498db;
+      }
+
+      .result-card.success {
+        border-left-color: #2ecc71;
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+      }
+
+      .result-card.warning {
+        border-left-color: #f39c12;
+        background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+      }
+
+      .result-card.danger {
+        border-left-color: #e74c3c;
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+      }
+
+      .result-header {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .risk-score {
+        font-size: 28px;
+        font-weight: bold;
+        color: #2c3e50;
+      }
+
+      .risk-label {
+        font-size: 14px;
+        font-weight: 600;
+        opacity: 0.8;
+      }
+
+      .result-details {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #555;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 30px 25px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        border: 1px solid #f0f0f0;
+      }
+
+      .stat-number {
+        font-size: 36px;
+        font-weight: bold;
+        color: #2ecc71;
+        margin-bottom: 8px;
+      }
+
+      .stat-label {
+        color: #666;
+        font-weight: 500;
+      }
+
+      .feed-item {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f0f0f0;
+      }
+
+      .feed-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .feed-user {
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .feed-time {
+        font-size: 12px;
+        color: #999;
+      }
+
+      .feed-content {
+        line-height: 1.6;
+        color: #555;
+      }
+
+      .education-section {
+        margin-bottom: 40px;
+      }
+
+      .education-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #2ecc71;
+        margin-bottom: 15px;
+      }
+
+      .education-text {
+        font-size: 16px;
+        line-height: 1.7;
+        color: #555;
+        margin-bottom: 20px;
+      }
+
+      .education-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      .education-list li {
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+        position: relative;
+        padding-left: 30px;
+      }
+
+      .education-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #2ecc71;
+        font-weight: bold;
+        font-size: 18px;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 40px 20px;
+      }
+
+      .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .nav-menu {
+          display: none;
+        }
+
+        .hero-title {
+          font-size: 36px;
+        }
+
+        .hero-subtitle {
+          font-size: 18px;
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+
+        .tab-navigation {
+          flex-direction: column;
+        }
+
+        .tab-btn {
+          min-width: auto;
+        }
+      }
+
+      .auth-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+      }
+
+      .auth-modal {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .auth-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .auth-logo {
+        font-size: 48px;
+        margin-bottom: 15px;
+      }
+
+      .auth-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 8px;
+      }
+
+      .auth-subtitle {
+        color: #666;
+        font-size: 14px;
+      }
+
+      .auth-switch {
+        text-align: center;
+        margin-top: 20px;
+        color: #666;
+      }
+
+      .auth-switch a {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="authOverlay" class="auth-overlay">
+      <div class="auth-modal">
+        <div class="auth-header">
+          <div class="auth-logo">🛡️</div>
+          <h2 class="auth-title">Welcome to GreenGuard</h2>
+          <p class="auth-subtitle">
+            AI-Powered Environmental Claim Verification
+          </p>
+        </div>
+
+        <div id="loginForm">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input
+              type="email"
+              id="loginEmail"
+              class="form-input"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input
+              type="password"
+              id="loginPassword"
+              class="form-input"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          <button id="loginBtn" class="btn btn-primary" style="width: 100%">
+            Sign In
+          </button>
+          <div class="auth-switch">
+            Don't have an account? <a href="#" id="showSignup">Sign up here</a>
+          </div>
+        </div>
+
+        <div id="signupForm" class="hidden">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input
+              type="text"
+              id="signupName"
+              class="form-input"
+              placeholder="Enter your full name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input
+              type="email"
+              id="signupEmail"
+              class="form-input"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input
+              type="password"
+              id="signupPassword"
+              class="form-input"
+              placeholder="Create a password"
+              required
+            />
+          </div>
+          <button id="signupBtn" class="btn btn-success" style="width: 100%">
+            Create Account
+          </button>
+          <div class="auth-switch">
+            Already have an account? <a href="#" id="showLogin">Sign in here</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="mainApp" class="hidden">
+      <header class="header">
+        <div class="nav-container">
+          <div class="logo">
+            <span class="logo-icon">🛡️</span>
+            GreenGuard
+            <span
+              style="
+                font-size: 12px;
+                background: #3498db;
+                color: white;
+                padding: 2px 6px;
+                border-radius: 10px;
+                margin-left: 8px;
+              "
+              >AI-Powered</span
+            >
+          </div>
+
+          <nav>
+            <ul class="nav-menu">
+              <li class="nav-item">
+                <a href="#" class="nav-link active" data-tab="analyzer"
+                  >Analyzer</a
+                >
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-tab="verification"
+                  >Verification</a
+                >
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-tab="community">Community</a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-tab="education">Education</a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link" data-tab="dashboard">Dashboard</a>
+              </li>
+            </ul>
+          </nav>
+
+          <div class="user-section">
+            <div class="user-info">
+              <div class="user-welcome">
+                Welcome, <span id="userName">User</span>
+              </div>
+              <div class="user-email" id="userEmail">user@example.com</div>
+            </div>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="main-container">
+        <section class="hero-section">
+          <div class="hero-content">
+            <h1 class="hero-title">
+              AI-Powered Environmental Claim Verification
+            </h1>
+            <p class="hero-subtitle">
+              GreenGuard uses advanced natural language processing to detect
+              greenwashing, analyze environmental claims, and promote climate
+              awareness through verified information.
+            </p>
+          </div>
+        </section>
+
+        <section class="features-section">
+          <div class="container">
+            <div class="features-grid">
+              <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3 class="feature-title">AI-Powered Detection</h3>
+                <p class="feature-description">
+                  Advanced algorithms analyze environmental claims with high
+                  accuracy using natural language processing and machine
+                  learning.
+                </p>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3 class="feature-title">Real-time Verification</h3>
+                <p class="feature-description">
+                  Cross-reference claims with verified environmental data
+                  sources and provide instant credibility assessments.
+                </p>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3 class="feature-title">Community Validation</h3>
+                <p class="feature-description">
+                  Crowdsourced verification enhances greenwashing detection
+                  accuracy through collaborative community efforts.
+                </p>
+              </div>
+
+              <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3 class="feature-title">Impact Tracking</h3>
+                <p class="feature-description">
+                  Monitor your contribution to environmental awareness and
+                  informed decision-making through comprehensive analytics.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="container">
+            <h2 class="section-title">Real-Time Verification Dashboard</h2>
+            <p
+              style="
+                text-align: center;
+                color: #666;
+                font-size: 18px;
+                margin-bottom: 40px;
+              "
+            >
+              Real-time verification of corporate environmental claims using
+              verified data sources.
+            </p>
+
+            <div class="dashboard-content">
+              <div class="tab-navigation">
+                <button class="tab-btn active" data-tab="analyzer">
+                  Analyzer
+                </button>
+                <button class="tab-btn" data-tab="verification">
+                  Verification
+                </button>
+                <button class="tab-btn" data-tab="education">Education</button>
+                <button class="tab-btn" data-tab="community">Community</button>
+                <button class="tab-btn" data-tab="dashboard">Dashboard</button>
+              </div>
+
+              <div class="tab-content">
+                <div id="analyzerTab" class="tab-panel active">
+                  <h3 style="margin-bottom: 30px; color: #2c3e50">
+                    Environmental Claim Analyzer
+                  </h3>
+                  <div class="form-group">
+                    <label class="form-label"
+                      >Company Name or Website URL</label
+                    >
+                    <input
+                      type="text"
+                      id="analyzeCompany"
+                      class="form-input"
+                      placeholder="Enter company name or website URL (e.g., company.com)"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Content to Analyze</label>
+                    <textarea
+                      id="analyzeContent"
+                      class="form-input textarea-input"
+                      placeholder="Paste the environmental claim or marketing content you want to analyze for potential greenwashing..."
+                    ></textarea>
+                  </div>
+                  <button id="analyzeBtn" class="btn btn-primary">
+                    🔍 Analyze Environmental Claims
+                  </button>
+
+                  <div id="analyzeResults"></div>
+                </div>
+
+                <div id="verificationTab" class="tab-panel">
+                  <h3 style="margin-bottom: 30px; color: #2c3e50">
+                    Environmental Claim Verification
+                  </h3>
+                  <div class="form-group">
+                    <label class="form-label">Company Name</label>
+                    <input
+                      type="text"
+                      id="verifyCompany"
+                      class="form-input"
+                      placeholder="Enter the company name to verify"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label"
+                      >Environmental Claim to Verify</label
+                    >
+                    <textarea
+                      id="verifyClaim"
+                      class="form-input textarea-input"
+                      placeholder="Enter the specific environmental claim you want to verify against third-party data sources..."
+                    ></textarea>
+                  </div>
+                  <button id="verifyBtn" class="btn btn-success">
+                    ✅ Verify Against Data Sources
+                  </button>
+
+                  <div id="verifyResults"></div>
+                </div>
+
+                <div id="educationTab" class="tab-panel">
+                  <div class="education-section">
+                    <h3 class="education-title">Understanding Greenwashing</h3>
+                    <p class="education-text">
+                      Greenwashing is the practice of making misleading or false
+                      claims about environmental benefits to appear more
+                      environmentally responsible than a company actually is.
+                      This deceptive marketing strategy undermines genuine
+                      sustainability efforts and misleads consumers.
+                    </p>
+                  </div>
+
+                  <div class="education-section">
+                    <h3 class="education-title">
+                      Common Greenwashing Tactics to Watch For
+                    </h3>
+                    <ul class="education-list">
+                      <li>
+                        Vague language like "eco-friendly" or "natural" without
+                        specific details or certifications
+                      </li>
+                      <li>
+                        Highlighting one minor green attribute while ignoring
+                        major environmental impacts
+                      </li>
+                      <li>
+                        Using nature imagery and green colors to suggest
+                        environmental benefits without substance
+                      </li>
+                      <li>
+                        Making claims about products that are inherently harmful
+                        (e.g., "clean coal")
+                      </li>
+                      <li>
+                        Fabricating awards or certifications, or using
+                        meaningless labels
+                      </li>
+                      <li>
+                        Making claims that are technically true but practically
+                        irrelevant
+                      </li>
+                      <li>
+                        Lack of proof or third-party verification for
+                        environmental claims
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="education-section">
+                    <h3 class="education-title">
+                      How to Identify Authentic Environmental Claims
+                    </h3>
+                    <ul class="education-list">
+                      <li>
+                        Look for third-party certifications from reputable
+                        organizations (ENERGY STAR, USDA Organic, etc.)
+                      </li>
+                      <li>
+                        Verify specific, measurable data and transparent
+                        reporting
+                      </li>
+                      <li>
+                        Check for life-cycle assessments and comprehensive
+                        environmental impact studies
+                      </li>
+                      <li>
+                        Research the company's overall environmental track
+                        record and practices
+                      </li>
+                      <li>
+                        Look for concrete actions and timelines, not just future
+                        promises
+                      </li>
+                      <li>
+                        Verify claims through independent sources and scientific
+                        studies
+                      </li>
+                      <li>
+                        Check if environmental claims are relevant to the
+                        product's main function
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div id="communityTab" class="tab-panel">
+                  <h3 style="margin-bottom: 30px; color: #2c3e50">
+                    Community Feedback & Reports
+                  </h3>
+                  <div class="form-group">
+                    <label class="form-label">Share Your Experience</label>
+                    <textarea
+                      id="communityFeedback"
+                      class="form-input textarea-input"
+                      placeholder="Share your experience with environmental claims you've encountered. Help the community by reporting greenwashing or verifying legitimate claims..."
+                    ></textarea>
+                  </div>
+                  <button id="submitFeedback" class="btn btn-primary">
+                    📝 Submit Community Report
+                  </button>
+
+                  <div style="margin-top: 40px">
+                    <h4 style="color: #2c3e50; margin-bottom: 20px">
+                      Recent Community Reports
+                    </h4>
+                    <div id="communityFeed">
+                      <div
+                        id="noFeedbackMessage"
+                        class="feed-item"
+                        style="
+                          text-align: center;
+                          color: #666;
+                          font-style: italic;
+                        "
+                      >
+                        No community reports yet. Be the first to share your
+                        experience!
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="dashboardTab" class="tab-panel">
+                  <h3 style="margin-bottom: 30px; color: #2c3e50">
+                    Analytics Dashboard
+                  </h3>
+
+                  <div class="stats-grid">
+                    <div class="stat-card">
+                      <div class="stat-number" id="activeUsers">0</div>
+                      <div class="stat-label">Active Users</div>
+                    </div>
+                    <div class="stat-card">
+                      <div class="stat-number" id="totalAnalyzed">0</div>
+                      <div class="stat-label">Total Claims Analyzed</div>
+                    </div>
+                    <div class="stat-card">
+                      <div class="stat-number" id="totalVerified">0</div>
+                      <div class="stat-label">Claims Verified</div>
+                    </div>
+                    <div class="stat-card">
+                      <div class="stat-number" id="totalFeedback">0</div>
+                      <div class="stat-label">User Feedback</div>
+                    </div>
+                  </div>
+
+                  <div style="margin-top: 40px">
+                    <h4 style="color: #2c3e50; margin-bottom: 20px">
+                      Your Personal Activity
+                    </h4>
+                    <div class="stats-grid">
+                      <div class="stat-card">
+                        <div
+                          class="stat-number"
+                          id="userAnalyzed"
+                          style="color: #3498db"
+                        >
+                          0
+                        </div>
+                        <div class="stat-label">Claims You've Analyzed</div>
+                      </div>
+                      <div class="stat-card">
+                        <div
+                          class="stat-number"
+                          id="userVerified"
+                          style="color: #2ecc71"
+                        >
+                          0
+                        </div>
+                        <div class="stat-label">Claims You've Verified</div>
+                      </div>
+                      <div class="stat-card">
+                        <div
+                          class="stat-number"
+                          id="userFeedback"
+                          style="color: #9b59b6"
+                        >
+                          0
+                        </div>
+                        <div class="stat-label">Feedback Submitted</div>
+                      </div>
+                      <div class="stat-card">
+                        <div
+                          class="stat-number"
+                          id="userDetected"
+                          style="color: #e74c3c"
+                        >
+                          0
+                        </div>
+                        <div class="stat-label">Greenwashing Detected</div>
+                      </div>
+                    </div>
+
+                    <div style="margin-top: 30px; text-align: center">
+                      <button
+                        id="resetStatsBtn"
+                        class="btn btn-secondary"
+                        style="
+                          background: #95a5a6;
+                          color: white;
+                          padding: 10px 20px;
+                          font-size: 14px;
+                        "
+                      >
+                        🔄 Reset All Statistics
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      class GreenGuardWebApp {
+        constructor() {
+          this.currentUser = null;
+          this.apiBaseUrl = "http://localhost:5000/api";
+          this.userStats = {
+            analyzed: 0,
+            verified: 0,
+            feedback: 0,
+            detected: 0,
+          };
+          this.globalStats = {
+            activeUsers: 0,
+            totalAnalyzed: 0,
+            totalVerified: 0,
+            totalFeedback: 0,
+          };
+          this.init();
+        }
+
+        init() {
+          this.resetAllData();
+          this.checkAuthStatus();
+          this.setupEventListeners();
+          this.loadDashboardStats();
+        }
+
+        resetAllData() {
+          localStorage.removeItem("greenguard_user_stats");
+          localStorage.removeItem("greenguard_global_stats");
+          localStorage.removeItem("greenguard_user_feedback");
+
+          this.userStats = {
+            analyzed: 0,
+            verified: 0,
+            feedback: 0,
+            detected: 0,
+          };
+          this.globalStats = {
+            activeUsers: 0,
+            totalAnalyzed: 0,
+            totalVerified: 0,
+            totalFeedback: 0,
+          };
+        }
+
+        init() {
+          this.checkAuthStatus();
+          this.setupEventListeners();
+          this.loadDashboardStats();
+        }
+
+        checkAuthStatus() {
+          const userData = localStorage.getItem("greenguard_user");
+          if (userData) {
+            this.currentUser = JSON.parse(userData);
+            this.showMainApp();
+          } else {
+            this.showAuthOverlay();
+          }
+        }
+
+        showAuthOverlay() {
+          document.getElementById("authOverlay").classList.remove("hidden");
+          document.getElementById("mainApp").classList.add("hidden");
+        }
+
+        showMainApp() {
+          document.getElementById("authOverlay").classList.add("hidden");
+          document.getElementById("mainApp").classList.remove("hidden");
+
+          if (this.currentUser) {
+            document.getElementById("userName").textContent =
+              this.currentUser.name;
+            document.getElementById("userEmail").textContent =
+              this.currentUser.email;
+          }
+
+          this.loadUserStats();
+          this.loadGlobalStats();
+          this.loadUserCommunityFeed();
+        }
+
+        loadUserStats() {
+          const savedStats = JSON.parse(
+            localStorage.getItem("greenguard_user_stats") || "{}"
+          );
+          this.userStats = {
+            analyzed: savedStats.analyzed || 0,
+            verified: savedStats.verified || 0,
+            feedback: savedStats.feedback || 0,
+            detected: savedStats.detected || 0,
+          };
+          this.updateUserStats();
+        }
+
+        loadGlobalStats() {
+          const savedGlobalStats = JSON.parse(
+            localStorage.getItem("greenguard_global_stats") || "{}"
+          );
+          this.globalStats = {
+            activeUsers: savedGlobalStats.activeUsers || 0,
+            totalAnalyzed: savedGlobalStats.totalAnalyzed || 0,
+            totalVerified: savedGlobalStats.totalVerified || 0,
+            totalFeedback: savedGlobalStats.totalFeedback || 0,
+          };
+          this.updateGlobalStats();
+        }
+
+        loadUserCommunityFeed() {
+          const userFeedback = JSON.parse(
+            localStorage.getItem("greenguard_user_feedback") || "[]"
+          );
+          const feedContainer = document.getElementById("communityFeed");
+
+          feedContainer.innerHTML = "";
+
+          if (userFeedback.length === 0) {
+            feedContainer.innerHTML = `
+                        <div id="noFeedbackMessage" class="feed-item" style="text-align: center; color: #666; font-style: italic;">
+                            No community reports yet. Be the first to share your experience!
+                        </div>
+                    `;
+          } else {
+            userFeedback.forEach((item) => {
+              const feedItem = document.createElement("div");
+              feedItem.className = "feed-item";
+              feedItem.innerHTML = `
+                            <div class="feed-header">
+                                <div class="feed-user">${item.userName}</div>
+                                <div class="feed-time">${item.timeAgo}</div>
+                            </div>
+                            <div class="feed-content">${item.content}</div>
+                        `;
+              feedContainer.appendChild(feedItem);
+            });
+          }
+        }
+
+        setupEventListeners() {
+          document
+            .getElementById("showSignup")
+            .addEventListener("click", (e) => {
+              e.preventDefault();
+              this.showSignupForm();
+            });
+
+          document
+            .getElementById("showLogin")
+            .addEventListener("click", (e) => {
+              e.preventDefault();
+              this.showLoginForm();
+            });
+
+          document
+            .getElementById("loginBtn")
+            .addEventListener("click", () => this.handleLogin());
+          document
+            .getElementById("signupBtn")
+            .addEventListener("click", () => this.handleSignup());
+          document
+            .getElementById("logoutBtn")
+            .addEventListener("click", () => this.handleLogout());
+
+          document.querySelectorAll(".nav-link, .tab-btn").forEach((link) => {
+            link.addEventListener("click", (e) => {
+              e.preventDefault();
+              const tabName = link.getAttribute("data-tab");
+              this.switchTab(tabName);
+            });
+          });
+
+          document
+            .getElementById("analyzeBtn")
+            .addEventListener("click", () => this.handleAnalyze());
+          document
+            .getElementById("verifyBtn")
+            .addEventListener("click", () => this.handleVerify());
+          document
+            .getElementById("submitFeedback")
+            .addEventListener("click", () => this.handleFeedback());
+          document
+            .getElementById("resetStatsBtn")
+            .addEventListener("click", () => this.resetAllStatistics());
+
+          document.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+              const authOverlay = document.getElementById("authOverlay");
+              if (!authOverlay.classList.contains("hidden")) {
+                if (
+                  !document
+                    .getElementById("loginForm")
+                    .classList.contains("hidden")
+                ) {
+                  this.handleLogin();
+                } else {
+                  this.handleSignup();
+                }
+              }
+            }
+          });
+        }
+
+        showLoginForm() {
+          document.getElementById("loginForm").classList.remove("hidden");
+          document.getElementById("signupForm").classList.add("hidden");
+        }
+
+        showSignupForm() {
+          document.getElementById("loginForm").classList.add("hidden");
+          document.getElementById("signupForm").classList.remove("hidden");
+        }
+
+        handleLogin() {
+          const email = document.getElementById("loginEmail").value.trim();
+          const password = document
+            .getElementById("loginPassword")
+            .value.trim();
+
+          if (!email || !password) {
+            this.showNotification("Please fill in all fields", "error");
+            return;
+          }
+
+          const userData = {
+            id: Date.now(),
+            name: email.split("@")[0],
+            email: email,
+            loginTime: new Date().toISOString(),
+          };
+
+          localStorage.setItem("greenguard_user", JSON.stringify(userData));
+          this.currentUser = userData;
+
+          this.globalStats.activeUsers++;
+          this.saveGlobalStats();
+
+          this.showMainApp();
+          this.showNotification("Successfully logged in!", "success");
+        }
+
+        handleSignup() {
+          const name = document.getElementById("signupName").value.trim();
+          const email = document.getElementById("signupEmail").value.trim();
+          const password = document
+            .getElementById("signupPassword")
+            .value.trim();
+
+          if (!name || !email || !password) {
+            this.showNotification("Please fill in all fields", "error");
+            return;
+          }
+
+          if (!this.isValidEmail(email)) {
+            this.showNotification(
+              "Please enter a valid email address",
+              "error"
+            );
+            return;
+          }
+
+          if (password.length < 6) {
+            this.showNotification(
+              "Password must be at least 6 characters",
+              "error"
+            );
+            return;
+          }
+
+          const userData = {
+            id: Date.now(),
+            name: name,
+            email: email,
+            signupTime: new Date().toISOString(),
+          };
+
+          localStorage.setItem("greenguard_user", JSON.stringify(userData));
+          this.currentUser = userData;
+
+          this.globalStats.activeUsers++;
+          this.saveGlobalStats();
+
+          this.showMainApp();
+          this.showNotification("Account created successfully!", "success");
+        }
+
+        handleLogout() {
+          localStorage.removeItem("greenguard_user");
+          this.currentUser = null;
+          this.showAuthOverlay();
+
+          document.getElementById("loginEmail").value = "";
+          document.getElementById("loginPassword").value = "";
+          document.getElementById("signupName").value = "";
+          document.getElementById("signupEmail").value = "";
+          document.getElementById("signupPassword").value = "";
+
+          this.showNotification("Successfully logged out!", "success");
+        }
+
+        switchTab(tabName) {
+          document.querySelectorAll(".nav-link, .tab-btn").forEach((link) => {
+            link.classList.remove("active");
+          });
+          document
+            .querySelectorAll(`[data-tab="${tabName}"]`)
+            .forEach((link) => {
+              link.classList.add("active");
+            });
+
+          document.querySelectorAll(".tab-panel").forEach((panel) => {
+            panel.classList.remove("active");
+          });
+          document.getElementById(`${tabName}Tab`).classList.add("active");
+        }
+
+        async handleAnalyze() {
+          const company = document
+            .getElementById("analyzeCompany")
+            .value.trim();
+          const content = document
+            .getElementById("analyzeContent")
+            .value.trim();
+
+          if (!company || !content) {
+            this.showNotification(
+              "Please fill in both company name and content fields",
+              "error"
+            );
+            return;
+          }
+
+          this.showLoading(
+            "analyzeResults",
+            "Analyzing environmental claims..."
+          );
+
+          try {
+            const response = await fetch(`${this.apiBaseUrl}/claims/detect`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                text: content,
+                url: company,
+              }),
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            console.log("API Response:", data);
+
+            this.displayAnalyzeResults(data);
+
+            this.userStats.analyzed++;
+            this.globalStats.totalAnalyzed++;
+            if (
+              data.claims &&
+              data.claims.some((claim) => (claim.greenwashing_risk || 0) > 0.7)
+            ) {
+              this.userStats.detected++;
+            }
+            this.saveUserStats();
+            this.saveGlobalStats();
+            this.updateUserStats();
+            this.updateGlobalStats();
+
+            this.showNotification(
+              "Analysis completed successfully!",
+              "success"
+            );
+          } catch (error) {
+            console.error("Analyze error:", error);
+            this.showNotification(
+              "Analysis failed. Make sure the backend server is running.",
+              "error"
+            );
+            document.getElementById("analyzeResults").innerHTML = `
+                        <div class="result-card danger">
+                            <div class="result-details">
+                                <strong>Connection Error:</strong> Unable to connect to the backend server. 
+                                Please ensure the Flask server is running on localhost:5000.
+                                <br><br>
+                                <strong>Error details:</strong> ${error.message}
+                            </div>
+                        </div>
+                    `;
+          }
+        }
+
+        async handleVerify() {
+          const company = document.getElementById("verifyCompany").value.trim();
+          const claim = document.getElementById("verifyClaim").value.trim();
+
+          if (!company || !claim) {
+            this.showNotification(
+              "Please fill in both company name and claim fields",
+              "error"
+            );
+            return;
+          }
+
+          this.showLoading("verifyResults", "Verifying environmental claim...");
+
+          try {
+            const response = await fetch(`${this.apiBaseUrl}/claims/verify`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                claim_text: claim,
+                company_name: company,
+              }),
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            this.displayVerifyResults(data);
+
+            this.userStats.verified++;
+            this.globalStats.totalVerified++;
+            this.saveUserStats();
+            this.saveGlobalStats();
+            this.updateUserStats();
+            this.updateGlobalStats();
+
+            this.showNotification(
+              "Verification completed successfully!",
+              "success"
+            );
+          } catch (error) {
+            console.error("Verify error:", error);
+            this.showNotification(
+              "Verification failed. Make sure the backend server is running.",
+              "error"
+            );
+            document.getElementById("verifyResults").innerHTML = `
+                        <div class="result-card danger">
+                            <div class="result-details">
+                                <strong>Connection Error:</strong> Unable to connect to the backend server. 
+                                Please ensure the Flask server is running on localhost:5000.
+                            </div>
+                        </div>
+                    `;
+          }
+        }
+
+        async handleFeedback() {
+          const feedback = document
+            .getElementById("communityFeedback")
+            .value.trim();
+
+          if (!feedback) {
+            this.showNotification("Please enter your feedback", "error");
+            return;
+          }
+
+          try {
+            const response = await fetch(
+              `${this.apiBaseUrl}/community/submit`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  claim_id: `user_feedback_${Date.now()}`,
+                  feedback_type: "additional_info",
+                  content: feedback,
+                  user_id: this.currentUser.id,
+                }),
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            document.getElementById("communityFeedback").value = "";
+
+            this.addToCommunityFeed(feedback);
+
+            this.userStats.feedback++;
+            this.globalStats.totalFeedback++;
+            this.saveUserStats();
+            this.saveGlobalStats();
+            this.updateUserStats();
+            this.updateGlobalStats();
+
+            this.showNotification(
+              "Feedback submitted successfully!",
+              "success"
+            );
+          } catch (error) {
+            console.error("Feedback error:", error);
+            this.showNotification(
+              "Failed to submit feedback. Server connection error.",
+              "error"
+            );
+          }
+        }
+
+        displayAnalyzeResults(data) {
+          const resultsDiv = document.getElementById("analyzeResults");
+
+          if (!data.success || !data.claims || data.claims.length === 0) {
+            resultsDiv.innerHTML = `
+                        <div class="result-card">
+                            <div class="result-details">No environmental claims detected in the provided content.</div>
+                        </div>
+                    `;
+            return;
+          }
+
+          // Calculate summary statistics
+          const totalClaims = data.claims.length;
+          const avgRisk =
+            data.claims.reduce(
+              (sum, claim) => sum + (claim.greenwashing_risk || 0),
+              0
+            ) / totalClaims;
+          const highRiskClaims = data.claims.filter(
+            (claim) => (claim.greenwashing_risk || 0) >= 0.7
+          ).length;
+          const mediumRiskClaims = data.claims.filter(
+            (claim) =>
+              (claim.greenwashing_risk || 0) >= 0.4 &&
+              (claim.greenwashing_risk || 0) < 0.7
+          ).length;
+          const lowRiskClaims = data.claims.filter(
+            (claim) => (claim.greenwashing_risk || 0) < 0.4
+          ).length;
+
+          const highestRiskClaim = data.claims.reduce((max, claim) =>
+            (claim.greenwashing_risk || 0) > (max.greenwashing_risk || 0)
+              ? claim
+              : max
+          );
+
+          const keywords = [
+            ...new Set(
+              data.claims.map((claim) => claim.keyword).filter(Boolean)
+            ),
+          ];
+
+          const overallRiskLevel = this.getRiskLevel(avgRisk);
+          const overallRiskClass = overallRiskLevel
+            .toLowerCase()
+            .replace(" ", "");
+
+          let resultsHTML = `
+                    <!-- Overall Summary -->
+                    <div class="result-card ${overallRiskClass}" style="border-left-width: 6px; margin-bottom: 20px;">
+                        <div class="result-header">
+                            <div class="risk-score">${Math.round(
+                              avgRisk * 100
+                            )}%</div>
+                            <div class="risk-label">Overall Greenwashing Risk: ${overallRiskLevel}</div>
+                        </div>
+                        <div class="result-details">
+                            <p><strong>Analysis Summary:</strong></p>
+                            <p>• Found ${totalClaims} environmental claim${
+            totalClaims > 1 ? "s" : ""
+          } in the content</p>
+                            <p>• ${highRiskClaims} high-risk, ${mediumRiskClaims} medium-risk, ${lowRiskClaims} low-risk claim${
+            totalClaims > 1 ? "s" : ""
+          }</p>
+                            <p>• Key environmental topics: ${keywords.join(
+                              ", "
+                            )}</p>
+                            <p><strong>Overall Assessment:</strong> ${this.getDetailedAnalysis(
+                              avgRisk,
+                              totalClaims,
+                              highRiskClaims
+                            )}</p>
+                        </div>
+                    </div>
+                `;
+
+          if (highRiskClaims > 0) {
+            const claimText =
+              highestRiskClaim.claim_text ||
+              highestRiskClaim.text ||
+              "Environmental claim detected";
+            const keyword = highestRiskClaim.keyword || "environmental";
+            const confidence =
+              highestRiskClaim.confidence_score ||
+              highestRiskClaim.confidence ||
+              0;
+            const risk = highestRiskClaim.greenwashing_risk || 0;
+
+            resultsHTML += `
+                        <div class="result-card danger" style="margin-top: 15px;">
+                            <div class="result-header">
+                                <div class="risk-score">${Math.round(
+                                  risk * 100
+                                )}%</div>
+                                <div class="risk-label">⚠️ Highest Risk Claim Found</div>
+                            </div>
+                            <div class="result-details">
+                                <p><strong>Concerning Claim:</strong> "${
+                                  claimText.length > 200
+                                    ? claimText.substring(0, 200) + "..."
+                                    : claimText
+                                }"</p>
+                                <p><strong>Environmental Keyword:</strong> ${keyword}</p>
+                                <p><strong>Detection Confidence:</strong> ${Math.round(
+                                  confidence * 100
+                                )}%</p>
+                                <p><strong>Why This is Concerning:</strong> ${this.getSpecificAnalysis(
+                                  risk,
+                                  keyword
+                                )}</p>
+                            </div>
+                        </div>
+                    `;
+          }
+
+          resultsHTML += `
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button id="toggleDetailedResults" class="btn btn-secondary" style="background: #95a5a6; color: white; padding: 10px 20px; font-size: 14px;">
+                            📋 View All ${totalClaims} Detailed Claims
+                        </button>
+                    </div>
+                    
+                    <div id="detailedResults" style="display: none; margin-top: 20px;">
+                        <h4 style="color: #2c3e50; margin-bottom: 15px;">Detailed Claim Analysis:</h4>
+                `;
+
+          data.claims.forEach((claim, index) => {
+            const riskLevel = this.getRiskLevel(claim.greenwashing_risk || 0);
+            const riskClass = riskLevel.toLowerCase().replace(" ", "");
+
+            const claimText =
+              claim.claim_text || claim.text || "Environmental claim detected";
+            const keyword = claim.keyword || "environmental";
+            const confidence = claim.confidence_score || claim.confidence || 0;
+            const risk = claim.greenwashing_risk || 0;
+
+            resultsHTML += `
+                        <div class="result-card ${riskClass}" style="margin-bottom: 15px; border-left-width: 3px;">
+                            <div class="result-header">
+                                <div class="risk-score">${Math.round(
+                                  risk * 100
+                                )}%</div>
+                                <div class="risk-label">Claim ${
+                                  index + 1
+                                }: ${riskLevel} Risk</div>
+                            </div>
+                            <div class="result-details">
+                                <p><strong>Claim:</strong> "${
+                                  claimText.length > 150
+                                    ? claimText.substring(0, 150) + "..."
+                                    : claimText
+                                }"</p>
+                                <p><strong>Keyword:</strong> ${keyword} | <strong>Confidence:</strong> ${Math.round(
+              confidence * 100
+            )}%</p>
+                            </div>
+                        </div>
+                    `;
+          });
+
+          resultsHTML += `</div>`;
+
+          resultsDiv.innerHTML = resultsHTML;
+
+          setTimeout(() => {
+            const toggleBtn = document.getElementById("toggleDetailedResults");
+            const detailedDiv = document.getElementById("detailedResults");
+
+            if (toggleBtn && detailedDiv) {
+              toggleBtn.addEventListener("click", () => {
+                if (detailedDiv.style.display === "none") {
+                  detailedDiv.style.display = "block";
+                  toggleBtn.textContent = `📋 Hide Detailed Claims`;
+                } else {
+                  detailedDiv.style.display = "none";
+                  toggleBtn.textContent = `📋 View All ${totalClaims} Detailed Claims`;
+                }
+              });
+            }
+          }, 100);
+        }
+
+        displayVerifyResults(data) {
+          const resultsDiv = document.getElementById("verifyResults");
+
+          if (!data.success || !data.verification) {
+            resultsDiv.innerHTML = `
+                        <div class="result-card danger">
+                            <div class="result-details">Verification failed. Please try again.</div>
+                        </div>
+                    `;
+            return;
+          }
+
+          const verification = data.verification;
+          const riskClass = verification.risk_level.toLowerCase();
+
+          let recommendationsHTML = "";
+          if (verification.recommendations) {
+            recommendationsHTML = verification.recommendations
+              .map((rec) => `<li>${rec}</li>`)
+              .join("");
+          }
+
+          resultsDiv.innerHTML = `
+                    <div class="result-card ${riskClass}">
+                        <div class="result-header">
+                            <div class="risk-score">${Math.round(
+                              verification.verification_score * 100
+                            )}%</div>
+                            <div class="risk-label">Verification Score - ${
+                              verification.risk_level
+                            } Risk</div>
+                        </div>
+                        <div class="result-details">
+                            <p><strong>Company:</strong> ${
+                              verification.company_name
+                            }</p>
+                            <p><strong>Verified Claim:</strong> "${
+                              verification.claim_text
+                            }"</p>
+                            
+                            ${
+                              recommendationsHTML
+                                ? `
+                                <div style="margin-top: 15px;">
+                                    <strong>Verification Results:</strong>
+                                    <ul style="margin-left: 20px; margin-top: 8px;">
+                                        ${recommendationsHTML}
+                                    </ul>
+                                </div>
+                            `
+                                : ""
+                            }
+                        </div>
+                    </div>
+                `;
+        }
+
+        addToCommunityFeed(feedback) {
+          const feedContainer = document.getElementById("communityFeed");
+
+          const noFeedbackMessage =
+            document.getElementById("noFeedbackMessage");
+          if (noFeedbackMessage) {
+            noFeedbackMessage.remove();
+          }
+
+          const newFeedItem = document.createElement("div");
+          newFeedItem.className = "feed-item";
+          newFeedItem.innerHTML = `
+                    <div class="feed-header">
+                        <div class="feed-user">${this.currentUser.name}</div>
+                        <div class="feed-time">Just now</div>
+                    </div>
+                    <div class="feed-content">${feedback}</div>
+                `;
+          feedContainer.insertBefore(newFeedItem, feedContainer.firstChild);
+
+          this.saveFeedbackToStorage(feedback);
+        }
+
+        saveFeedbackToStorage(feedback) {
+          const userFeedback = JSON.parse(
+            localStorage.getItem("greenguard_user_feedback") || "[]"
+          );
+          const newFeedback = {
+            id: Date.now(),
+            userName: this.currentUser.name,
+            content: feedback,
+            timeAgo: "Just now",
+            timestamp: new Date().toISOString(),
+          };
+          userFeedback.unshift(newFeedback);
+
+          // Keep only the last 20 submissions
+          if (userFeedback.length > 20) {
+            userFeedback.splice(20);
+          }
+
+          localStorage.setItem(
+            "greenguard_user_feedback",
+            JSON.stringify(userFeedback)
+          );
+        }
+
+        async loadDashboardStats() {
+          try {
+            const response = await fetch(`${this.apiBaseUrl}/analytics/stats`);
+            if (response.ok) {
+              const data = await response.json();
+              if (data.success && data.statistics) {
+                this.globalStats.totalAnalyzed =
+                  data.statistics.total_claims_analyzed ||
+                  this.globalStats.totalAnalyzed;
+                this.globalStats.totalVerified =
+                  data.statistics.high_risk_claims ||
+                  this.globalStats.totalVerified;
+                this.globalStats.totalFeedback =
+                  data.statistics.recent_claims_7days ||
+                  this.globalStats.totalFeedback;
+                this.saveGlobalStats();
+                this.updateGlobalStats();
+              }
+            }
+          } catch (error) {
+            console.error("Error loading dashboard stats:", error);
+          }
+        }
+
+        updateUserStats() {
+          document.getElementById("userAnalyzed").textContent =
+            this.userStats.analyzed;
+          document.getElementById("userVerified").textContent =
+            this.userStats.verified;
+          document.getElementById("userFeedback").textContent =
+            this.userStats.feedback;
+          document.getElementById("userDetected").textContent =
+            this.userStats.detected;
+        }
+
+        updateGlobalStats() {
+          document.getElementById("activeUsers").textContent =
+            this.globalStats.activeUsers.toLocaleString();
+          document.getElementById("totalAnalyzed").textContent =
+            this.globalStats.totalAnalyzed.toLocaleString();
+          document.getElementById("totalVerified").textContent =
+            this.globalStats.totalVerified.toLocaleString();
+          document.getElementById("totalFeedback").textContent =
+            this.globalStats.totalFeedback.toLocaleString();
+        }
+
+        saveUserStats() {
+          localStorage.setItem(
+            "greenguard_user_stats",
+            JSON.stringify(this.userStats)
+          );
+        }
+
+        saveGlobalStats() {
+          localStorage.setItem(
+            "greenguard_global_stats",
+            JSON.stringify(this.globalStats)
+          );
+        }
+
+        showLoading(containerId, message) {
+          const container = document.getElementById(containerId);
+          container.innerHTML = `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <div>${message}</div>
+                    </div>
+                `;
+        }
+
+        showNotification(message, type = "info") {
+          const notification = document.createElement("div");
+          notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 15px 20px;
+                    border-radius: 8px;
+                    color: white;
+                    font-weight: 500;
+                    z-index: 3000;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    max-width: 300px;
+                `;
+
+          switch (type) {
+            case "success":
+              notification.style.background = "#2ecc71";
+              break;
+            case "error":
+              notification.style.background = "#e74c3c";
+              break;
+            default:
+              notification.style.background = "#3498db";
+          }
+
+          notification.textContent = message;
+          document.body.appendChild(notification);
+
+          setTimeout(() => {
+            notification.remove();
+          }, 4000);
+        }
+
+        getDetailedAnalysis(avgRisk, totalClaims, highRiskClaims) {
+          if (highRiskClaims > 0) {
+            return `This content contains ${highRiskClaims} high-risk greenwashing claim${
+              highRiskClaims > 1 ? "s" : ""
+            }. Review these claims carefully for specificity and third-party verification.`;
+          } else if (avgRisk >= 0.4) {
+            return `This content has moderate greenwashing risk. While not extremely concerning, some claims could benefit from more specific evidence and verification.`;
+          } else {
+            return `This content appears to have legitimate environmental claims with low greenwashing risk. The organization seems to provide specific, actionable environmental commitments.`;
+          }
+        }
+
+        getSpecificAnalysis(risk, keyword) {
+          if (risk >= 0.7) {
+            return `High use of vague environmental terms like "${keyword}" without specific metrics or third-party verification. Look for concrete data and certifications.`;
+          } else if (risk >= 0.4) {
+            return `Moderate concern with "${keyword}" claims. Could benefit from more specific details and measurable outcomes.`;
+          } else {
+            return `The "${keyword}" claims appear to have supporting context and specificity.`;
+          }
+        }
+
+        getRiskLevel(risk) {
+          if (risk >= 0.7) return "HIGH";
+          if (risk >= 0.4) return "MEDIUM";
+          return "LOW";
+        }
+
+        getAnalysisText(risk) {
+          if (risk >= 0.7) {
+            return "High probability of greenwashing detected. Claims lack specificity and third-party verification.";
+          } else if (risk >= 0.4) {
+            return "Moderate greenwashing risk. Some environmental claims may need additional verification.";
+          } else {
+            return "Low greenwashing risk. Claims appear to have supporting evidence and specificity.";
+          }
+        }
+
+        resetAllStatistics() {
+          if (
+            confirm(
+              "Are you sure you want to reset all statistics to 0? This action cannot be undone."
+            )
+          ) {
+            this.resetAllData();
+            this.updateUserStats();
+            this.updateGlobalStats();
+            this.loadUserCommunityFeed();
+            this.showNotification(
+              "All statistics have been reset to 0",
+              "success"
+            );
+          }
+        }
+
+        isValidEmail(email) {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          return emailRegex.test(email);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        new GreenGuardWebApp();
+      });
+    </script>
+  </body>
+</html>
