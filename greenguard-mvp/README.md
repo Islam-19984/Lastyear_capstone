@@ -96,4 +96,4 @@ Designs:
 
 ![](designs/screenshots/actual-Stats-dashboard.png.png)
 
-![](designs/figma/Figma.pdf)
+![](designs/figma/Untitled.png)
