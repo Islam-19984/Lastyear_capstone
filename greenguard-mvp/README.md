@@ -1,12 +1,12 @@
 GreenGuard is an AI-powered browser extension that detects, analyzes, and verifies corporate environmental claims in real-time. Using advanced Natural Language Processing and machine learning algorithms, it empowers consumers to make informed sustainable choices by identifying greenwashing tactics and providing verified environmental information at the point of decision-making.
 
 Key Features
-AI-Powered Detection: Advanced NLP algorithms detect environmental claims and assess greenwashing risk
-Real-Time Analysis: Instant processing of web content as users browse
-Claim Verification: Cross-references claims with multiple environmental data sources
-Community Platform: User-driven reporting and verification system
-Live Analytics: Real-time statistics tracking user engagement and system performance
-Educational Content: Comprehensive resources about greenwashing tactics and sustainability
+AI-Powered Detection: Advanced NLP algorithms detect environmental claims and assess greenwashing risk,
+Real-Time Analysis Instant processing of web content as users browse, 
+Claim Verification Cross-references claims with multiple environmental data sources, 
+Community Platform User-driven reporting and verification system,
+Live Analytics Real-time statistics tracking user engagement and system performance,
+Educational Content: Comprehensive resources about greenwashing tactics and sustainability,
 
 Repository Link:
 Environment Setup and Installation.
