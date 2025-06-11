@@ -95,3 +95,5 @@ Designs:
 ![](designs/screenshots/actual-community-Report.png.png)
 
 ![](designs/screenshots/actual-Stats-dashboard.png.png)
+
+![](designs/figma/Figma.pdf)
