@@ -1,4 +1,4 @@
-GreenGuard is an AI-powered browser extension that detects, analyzes, and verifies corporate environmental claims in real-time. Using advanced Natural Language Processing and machine learning algorithms, it empowers consumers to make informed sustainable choices by identifying greenwashing tactics and providing verified environmental information at the point of decision-making.
+GreenGuard is an AI-powered browser extension that detects, analyzes, and verifies corporate environmental claims in real-time.  it empowers consumers to make informed sustainable choices by identifying greenwashing tactics and providing verified environmental information at the point of decision-making.
 
 Key Features
 AI-Powered Detection uses Advanced NLP algorithms detect environmental claims and assess greenwashing risk,
