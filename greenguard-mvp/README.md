@@ -81,3 +81,16 @@ Development Environment (Current)
 ✅ MongoDB local instance
 ✅ Browser extension loaded as unpacked
 ✅ Development and testing complete
+
+Designs:
+![](designs/screenshots/actual-auth-screen.png.png)
+
+![](designs/screenshots/actual-analyzer.png.png)
+
+![](designs/screenshots/actual-verification.png.png)
+
+![](designs/screenshots/actual-education.png.png)
+
+![](designs/screenshots/actual-community-Report.png.png)
+
+![](designs/screenshots/actual-Stats-dashboard.png.png)
