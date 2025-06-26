@@ -13,7 +13,8 @@ Installation Instructions
 Step 1: Download the Extension
 
 Download this repository as a ZIP file or clone it:
-git clone [your-repo-url]
+git clone <https://github.com/Islam-19984/Lastyear_capstone.git>
+
 Extract the ZIP file to a folder on your computer
 
 Step 2: Enable Developer Mode in Chrome
@@ -86,7 +87,7 @@ Support
 
 For issues or questions:
 Create an issue in this repository,
-Contact: [your-email@example.com]
+Contact: [islamomar2095@gmail.com]
 
 Join the fight against greenwashing with GreenGuard
 
