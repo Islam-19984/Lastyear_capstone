@@ -1,4 +1,4 @@
-print("🚀 Initializing GreenGuard Database...");
+print("Initializing GreenGuard Database...");
 
 db.companies.drop();
 db.claims.drop();

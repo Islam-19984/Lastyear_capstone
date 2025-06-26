@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 
 
 class Block:
-    """Individual block in the blockchain"""
 
     def __init__(
         self,
@@ -27,7 +26,6 @@ class Block:
         self.hash = self.calculate_hash()
 
     def calculate_hash(self) -> str:
-        """Calculate SHA-256 hash of the block"""
         block_string = json.dumps(
             {
                 "index": self.index,
@@ -41,7 +39,6 @@ class Block:
         return hashlib.sha256(block_string.encode()).hexdigest()
 
     def mine_block(self, difficulty: int = 2):
-        """Simple proof of work mining"""
         target = "0" * difficulty
         start_time = time.time()
 
@@ -52,17 +49,18 @@ class Block:
             if self.nonce % 10000 == 0:
                 elapsed = time.time() - start_time
                 logger.debug(
-                    f"Mining block {self.index}: nonce {self.nonce}, elapsed {elapsed:.2f}s"
+                    f"Mining block {self.index}: nonce {self.nonce}, "
+                    f"elapsed {elapsed:.2f}s"
                 )
 
         elapsed = time.time() - start_time
         logger.info(
-            f"Block {self.index} mined: {self.hash[:16]}... (nonce: {self.nonce}, time: {elapsed:.2f}s)"
+            f"Block {self.index} mined: {self.hash[:16]}"
+            f"... (nonce: {self.nonce}, time: {elapsed:.2f}s)"
         )
 
 
 class GreenGuardBlockchain:
-    """Blockchain for storing verification records"""
 
     def __init__(self):
         self.chain: List[Block] = []
@@ -72,13 +70,13 @@ class GreenGuardBlockchain:
         self.create_genesis_block()
 
     def create_genesis_block(self) -> Block:
-        """Create the first block in the chain"""
         genesis_data = {
             "type": "genesis",
             "message": "GreenGuard Blockchain Genesis Block",
             "created_by": "GreenGuard System",
             "version": "1.0.0",
-            "features": ["verification_recording", "transparency", "immutability"],
+            "features": ["verification_recording", "transparency",
+                         "immutability"],
         }
 
         genesis_block = Block(0, time.time(), genesis_data, "0")
@@ -88,12 +86,11 @@ class GreenGuardBlockchain:
         return genesis_block
 
     def get_latest_block(self) -> Block:
-        """get the most recent block"""
         return self.chain[-1]
 
     def add_verification_block(self, verification_data: Dict) -> str:
-        """add a new verification to the blockchain"""
-        verification_id = f"GG_{int(time.time())}_{hashlib.md5(str(verification_data).encode()).hexdigest()[:8]}"
+        verification_id = f"GG_{int(time.time())}"
+        f"_{hashlib.md5(str(verification_data).encode()).hexdigest()[:8]}"
 
         block_data = {
             "type": "verification",
@@ -104,16 +101,20 @@ class GreenGuardBlockchain:
                 "score": verification_data.get("verification_score", 0),
                 "status": verification_data.get("status", "unknown"),
                 "risk_level": verification_data.get("risk_level", "unknown"),
-                "trustworthiness": verification_data.get("trustworthiness", "unknown"),
-                "evidence_summary": verification_data.get("evidence_summary", ""),
-                "recommendations": verification_data.get("recommendations", []),
+                "trustworthiness": verification_data.get("trustworthiness",
+                                                         "unknown"),
+                "evidence_summary": verification_data.get("evidence_summary",
+                                                          ""),
+                "recommendations": verification_data.get("recommendations",
+                                                         []),
             },
             "verification_metadata": {
                 "timestamp": datetime.utcnow().isoformat(),
                 "verified_by": verification_data.get("user_email", "system"),
                 "algorithm_version": "universal_v1.0",
                 "data_sources": verification_data.get("sources", {}),
-                "company_analysis": verification_data.get("company_analysis", {}),
+                "company_analysis": verification_data.get("company_analysis",
+                                                          {}),
             },
             "blockchain_security": {
                 "immutable": True,
@@ -131,18 +132,20 @@ class GreenGuardBlockchain:
         )
 
         logger.info(
-            f"Mining verification block for {verification_data.get('company_name', 'Unknown')}"
+            f"Mining verification block for "
+            f"{verification_data.get('company_name', 'Unknown')}"
         )
         new_block.mine_block(self.difficulty)
 
         self.chain.append(new_block)
 
-        logger.info(f"Verification block added to blockchain: {verification_id}")
+        logger.info(f"Verification block added to blockchain: "
+                    f"{verification_id}")
         return verification_id
 
     def add_claim_analysis_block(self, claim_data: Dict) -> str:
-        """Add claim analysis to blockchain for transparency"""
-        claim_id = f"CL_{int(time.time())}_{hashlib.md5(str(claim_data).encode()).hexdigest()[:8]}"
+        claim_id = f"CL_{int(time.time())}"
+        f"_{hashlib.md5(str(claim_data).encode()).hexdigest()[:8]}"
 
         block_data = {
             "type": "claim_analysis",
@@ -176,7 +179,6 @@ class GreenGuardBlockchain:
         return claim_id
 
     def get_verification_proof(self, verification_id: str) -> Optional[Dict]:
-        """Get immutable proof of a verification"""
         for block in self.chain:
             if (
                 block.data.get("type") == "verification"
@@ -187,13 +189,16 @@ class GreenGuardBlockchain:
                     "block_index": block.index,
                     "block_hash": block.hash,
                     "previous_hash": block.previous_hash,
-                    "timestamp": block.data.get("verification_metadata", {}).get(
+                    "timestamp": block.data.get("verification_metadata",
+                                                {}).get(
                         "timestamp"
                     ),
                     "company_name": block.data.get("company_name"),
                     "claim": block.data.get("claim"),
-                    "verification_result": block.data.get("verification_result"),
-                    "verified_by": block.data.get("verification_metadata", {}).get(
+                    "verification_result": block.data.get(
+                        "verification_result"),
+                    "verified_by": block.data.get("verification_metadata",
+                                                  {}).get(
                         "verified_by"
                     ),
                     "blockchain_proof": {
@@ -208,37 +213,41 @@ class GreenGuardBlockchain:
         return None
 
     def get_company_history(self, company_name: str) -> List[Dict]:
-        """Get all blockchain verifications for a company"""
         company_verifications = []
         for block in self.chain:
             if (
                 block.data.get("type") == "verification"
-                and block.data.get("company_name", "").lower() == company_name.lower()
+                and block.data.get("company_name", "").lower() ==
+                company_name.lower()
             ):
                 company_verifications.append(
                     {
                         "verification_id": block.data.get("verification_id"),
                         "claim": block.data.get("claim"),
-                        "verification_result": block.data.get("verification_result"),
-                        "timestamp": block.data.get("verification_metadata", {}).get(
+                        "verification_result":
+                            block.data.get("verification_result"),
+                        "timestamp": block.data.get("verification_metadata",
+                                                    {}).get(
                             "timestamp"
                         ),
                         "block_hash": block.hash[:16] + "...",
                         "block_index": block.index,
-                        "verified_by": block.data.get("verification_metadata", {}).get(
+                        "verified_by": block.data.get("verification_metadata",
+                                                      {}).get(
                             "verified_by"
                         ),
                     }
                 )
-        return sorted(company_verifications, key=lambda x: x["timestamp"], reverse=True)
+        return sorted(company_verifications, key=lambda x: x["timestamp"],
+                      reverse=True)
 
     def get_user_verification_history(self, user_email: str) -> List[Dict]:
-        """Get all verifications performed by a specific user"""
         user_verifications = []
         for block in self.chain:
             if (
                 block.data.get("type") == "verification"
-                and block.data.get("verification_metadata", {}).get("verified_by")
+                and block.data.get("verification_metadata",
+                                   {}).get("verified_by")
                 == user_email
             ):
                 user_verifications.append(
@@ -246,17 +255,19 @@ class GreenGuardBlockchain:
                         "verification_id": block.data.get("verification_id"),
                         "company_name": block.data.get("company_name"),
                         "claim": block.data.get("claim"),
-                        "verification_result": block.data.get("verification_result"),
-                        "timestamp": block.data.get("verification_metadata", {}).get(
+                        "verification_result":
+                            block.data.get("verification_result"),
+                        "timestamp": block.data.get("verification_metadata",
+                                                    {}).get(
                             "timestamp"
                         ),
                         "block_hash": block.hash[:16] + "...",
                     }
                 )
-        return sorted(user_verifications, key=lambda x: x["timestamp"], reverse=True)
+        return sorted(user_verifications, key=lambda x: x["timestamp"],
+                      reverse=True)
 
     def is_chain_valid(self) -> bool:
-        """Validate the entire blockchain"""
         for i in range(1, len(self.chain)):
             current_block = self.chain[i]
             previous_block = self.chain[i - 1]
@@ -272,18 +283,19 @@ class GreenGuardBlockchain:
         return True
 
     def get_blockchain_stats(self) -> Dict:
-        """Get comprehensive blockchain network statistics"""
         verification_blocks = [
             b for b in self.chain if b.data.get("type") == "verification"
         ]
-        claim_blocks = [b for b in self.chain if b.data.get("type") == "claim_analysis"]
+        claim_blocks = [b for b in self.chain if b.data.get("type") ==
+                        "claim_analysis"]
 
         companies_verified = set()
         users_active = set()
 
         for block in verification_blocks:
             company = block.data.get("company_name")
-            user = block.data.get("verification_metadata", {}).get("verified_by")
+            user = block.data.get("verification_metadata",
+                                  {}).get("verified_by")
             if company:
                 companies_verified.add(company.lower())
             if user and user != "system":
@@ -319,7 +331,8 @@ class GreenGuardBlockchain:
             },
             "genesis_info": {
                 "timestamp": self.chain[0].timestamp if self.chain else None,
-                "hash": self.chain[0].hash[:16] + "..." if self.chain else None,
+                "hash": self.chain[0].hash[:16] + "..." if self.chain else
+                None,
             },
         }
 
@@ -328,7 +341,6 @@ greenguard_blockchain = GreenGuardBlockchain()
 
 
 def add_verification_to_blockchain(verification_data: Dict) -> str:
-    """Add a verification record to the blockchain"""
     try:
         verification_id = greenguard_blockchain.add_verification_block(
             verification_data
@@ -340,7 +352,6 @@ def add_verification_to_blockchain(verification_data: Dict) -> str:
 
 
 def add_claim_analysis_to_blockchain(claim_data: Dict) -> str:
-    """Add claim analysis to blockchain"""
     try:
         claim_id = greenguard_blockchain.add_claim_analysis_block(claim_data)
         return claim_id
@@ -350,7 +361,6 @@ def add_claim_analysis_to_blockchain(claim_data: Dict) -> str:
 
 
 def get_blockchain_verification_proof(verification_id: str) -> Optional[Dict]:
-    """Get immutable proof of a verification from blockchain"""
     try:
         return greenguard_blockchain.get_verification_proof(verification_id)
     except Exception as e:
@@ -359,7 +369,6 @@ def get_blockchain_verification_proof(verification_id: str) -> Optional[Dict]:
 
 
 def get_company_blockchain_history(company_name: str) -> List[Dict]:
-    """Get all blockchain verifications for a company"""
     try:
         return greenguard_blockchain.get_company_history(company_name)
     except Exception as e:
@@ -368,7 +377,6 @@ def get_company_blockchain_history(company_name: str) -> List[Dict]:
 
 
 def get_user_blockchain_history(user_email: str) -> List[Dict]:
-    """Get user's verification history from blockchain"""
     try:
         return greenguard_blockchain.get_user_verification_history(user_email)
     except Exception as e:
@@ -377,7 +385,6 @@ def get_user_blockchain_history(user_email: str) -> List[Dict]:
 
 
 def get_blockchain_statistics() -> Dict:
-    """Get blockchain network statistics"""
     try:
         return greenguard_blockchain.get_blockchain_stats()
     except Exception as e:

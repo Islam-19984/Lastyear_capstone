@@ -1,0 +1,1680 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GreenGuard - AI-Powered Environmental Claim Verification</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        width: 100vw !important;
+        max-width: 800px !important;
+        min-width: 600px !important;
+        max-height: 700px !important;
+        min-height: 600px !important;
+        height: 700px !important;
+        overflow: hidden !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #333;
+        line-height: 1.5;
+        position: relative;
+      }
+
+      .popup-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        font-size: 1rem;
+        position: relative;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        color: white;
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        flex-shrink: 0;
+        z-index: 100;
+      }
+
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .logo-icon {
+        font-size: 20px;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+      }
+
+      .logo h1 {
+        font-size: 16px;
+        font-weight: 700;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      }
+
+      .ai-badge {
+        background: rgba(255, 255, 255, 0.25);
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 9px;
+        margin-left: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(5px);
+      }
+
+      .user-info {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 4px 8px;
+        border-radius: 15px;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .logout-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 9px;
+        padding: 2px 6px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+      }
+
+      .logout-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .tab-navigation {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        padding: 6px;
+        margin: 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        flex-shrink: 0;
+      }
+
+      .tab-navigation::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tab-btn {
+        flex: 1;
+        background: none;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        color: #666;
+        white-space: nowrap;
+        min-width: fit-content;
+        margin: 0 2px;
+      }
+
+      .tab-btn.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        transform: translateY(-1px);
+      }
+
+      .tab-btn:hover:not(.active) {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+      }
+
+      .content-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        padding-bottom: 20px;
+      }
+
+      .tab-content {
+        display: none;
+        width: 100%;
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      #authSection {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        flex-direction: column;
+      }
+
+      .welcome-message {
+        text-align: center;
+        color: white;
+        margin-bottom: 20px;
+        padding: 0 20px;
+      }
+
+      .welcome-message h2 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .welcome-message p {
+        font-size: 12px;
+        opacity: 0.9;
+        line-height: 1.4;
+      }
+
+      .auth-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      .auth-title {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #667eea;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+        width: 100%;
+        position: relative;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #333;
+        font-size: 12px;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #e1e8ed;
+        border-radius: 8px;
+        font-size: 12px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(5px);
+        color: #333 !important;
+        -webkit-text-fill-color: #333 !important;
+      }
+
+      .form-group input::placeholder,
+      .form-group textarea::placeholder {
+        color: #999 !important;
+        -webkit-text-fill-color: #999 !important;
+      }
+
+      .password-input-container {
+        position: relative;
+        width: 100%;
+      }
+
+      .password-input-container input {
+        padding-right: 35px;
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 2px;
+        font-size: 14px;
+        color: #666;
+        transition: all 0.2s ease;
+        border-radius: 3px;
+        min-width: 20px;
+        min-height: 20px;
+      }
+
+      .password-toggle:hover {
+        color: #667eea;
+        background: rgba(102, 126, 234, 0.1);
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+        transform: scale(1.01);
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+        max-height: 150px;
+        font-family: inherit;
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: 100%;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        position: relative;
+        overflow: hidden;
+        min-height: 44px;
+      }
+
+      .btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.3s;
+      }
+
+      .btn:hover::before {
+        left: 100%;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+      }
+
+      .btn:active {
+        transform: translateY(0);
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .result-card,
+      .education-content {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        width: 100%;
+      }
+
+      .result-card h3,
+      .education-content h3 {
+        color: #667eea;
+        margin-bottom: 12px;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .education-content h4 {
+        color: #667eea;
+        margin: 16px 0 10px 0;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .education-content h5 {
+        color: #667eea;
+        margin: 12px 0 8px 0;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .education-content p,
+      .education-content li {
+        font-size: 11px;
+        line-height: 1.5;
+        color: #555;
+        margin-bottom: 8px;
+      }
+
+      .education-content ul {
+        padding-left: 16px;
+        margin: 8px 0;
+      }
+
+      .education-content li {
+        margin-bottom: 6px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-bottom: 16px;
+        width: 100%;
+      }
+
+      .stat-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        padding: 12px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .stat-number {
+        font-size: 18px;
+        font-weight: 900;
+        color: #667eea;
+        margin-bottom: 4px;
+        text-shadow: 0 1px 2px rgba(102, 126, 234, 0.3);
+      }
+
+      .stat-label {
+        font-size: 9px;
+        color: #666;
+        font-weight: 600;
+      }
+
+      .auth-switch {
+        text-align: center;
+        margin-top: 16px;
+        font-size: 11px;
+      }
+
+      .auth-switch a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .auth-switch a:hover {
+        text-decoration: underline;
+        color: #764ba2;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 20px;
+        color: #667eea;
+        font-size: 12px;
+      }
+
+      #analysisResults,
+      #verificationResults,
+      #websiteAnalysisResults {
+        display: none;
+      }
+
+      .risk-indicator {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 8px;
+        background: rgba(102, 126, 234, 0.1);
+        font-weight: 600;
+      }
+
+      .analysis-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .analysis-section h4 {
+        color: #667eea;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .current-page-btn {
+        background: rgba(102, 126, 234, 0.1);
+        border: 1px solid #667eea;
+        color: #667eea;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-top: 8px;
+        width: 100%;
+      }
+
+      .current-page-btn:hover {
+        background: #667eea;
+        color: white;
+      }
+
+      .website-results {
+        margin-top: 15px;
+      }
+
+      .website-results h5 {
+        color: #667eea;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      .keywords, .warnings, .transparency {
+        margin: 12px 0;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 11px;
+      }
+
+      .keywords {
+        background: rgba(34, 197, 94, 0.1);
+        border-left: 3px solid #22c55e;
+      }
+
+      .warnings {
+        background: rgba(251, 191, 36, 0.1);
+        border-left: 3px solid #fbbf24;
+      }
+
+      .transparency {
+        background: rgba(59, 130, 246, 0.1);
+        border-left: 3px solid #3b82f6;
+      }
+
+      .keywords ul, .warnings ul, .transparency ul {
+        margin: 8px 0 0 16px;
+        padding: 0;
+      }
+
+      .keywords li, .warnings li, .transparency li {
+        margin-bottom: 4px;
+        font-size: 10px;
+      }
+
+      .no-content {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+        font-size: 11px;
+      }
+
+      .error {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid #ef4444;
+        color: #dc2626;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 11px;
+        text-align: center;
+      }
+
+      .loading-spinner {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border: 2px solid #667eea;
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spin 1s ease-in-out infinite;
+        margin-right: 8px;
+      }
+
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .result-card.enhanced {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        padding: 20px;
+        color: white;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        margin: 15px 0;
+      }
+
+      .result-card.enhanced h3 {
+        color: white;
+        margin-bottom: 15px;
+        text-align: center;
+        font-size: 18px;
+      }
+
+      .result-card.enhanced h4 {
+        color: #f8f9fa;
+        margin: 15px 0 10px 0;
+        font-size: 14px;
+      }
+
+      .claims-section {
+        background: rgba(255,255,255,0.1);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+        backdrop-filter: blur(10px);
+      }
+
+      .claims-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 10px;
+      }
+
+      .claim-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        background: rgba(255,255,255,0.15);
+        border-radius: 8px;
+        padding: 12px;
+        border-left: 3px solid #4facfe;
+      }
+
+      .claim-number {
+        background: #4facfe;
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+
+      .claim-content {
+        flex: 1;
+      }
+
+      .claim-text {
+        font-size: 13px;
+        line-height: 1.4;
+        margin-bottom: 6px;
+        font-style: italic;
+        color: #f8f9fa;
+      }
+
+      .claim-meta {
+        font-size: 11px;
+        color: #e9ecef;
+        margin-bottom: 4px;
+      }
+
+      .claim-meta .confidence {
+        background: rgba(34, 197, 94, 0.3);
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-weight: 500;
+      }
+
+      .claim-meta .type {
+        background: rgba(139, 69, 19, 0.3);
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-weight: 500;
+      }
+
+      .no-claims-section {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 8px;
+        padding: 20px;
+        margin: 15px 0;
+        text-align: center;
+        justify-content: center;
+      }
+
+      .no-claims-icon {
+        font-size: 24px;
+      }
+
+      .no-claims-text {
+        color: #f8f9fa;
+        font-size: 14px;
+      }
+
+      .keywords-section {
+        background: rgba(255, 193, 7, 0.2);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+      }
+
+      .keywords-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .keyword-tag {
+        background: rgba(255, 193, 7, 0.8);
+        color: #212529;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 500;
+      }
+
+      .greenwashing-section {
+        background: rgba(220, 53, 69, 0.2);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+      }
+
+      .indicators-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .indicator-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.1);
+        padding: 8px;
+        border-radius: 6px;
+      }
+
+      .indicator-icon {
+        font-size: 14px;
+      }
+
+      .indicator-text {
+        font-size: 12px;
+        color: #f8f9fa;
+      }
+
+      .content-preview .content-text {
+        font-size: 12px;
+        background: rgba(255,255,255,0.1);
+        padding: 10px;
+        border-radius: 6px;
+        font-style: italic;
+        line-height: 1.4;
+        max-height: 60px;
+        overflow-y: auto;
+      }
+
+      .source-info .source-url {
+        font-size: 12px;
+        background: rgba(255,255,255,0.1);
+        padding: 8px;
+        border-radius: 6px;
+        word-break: break-all;
+      }
+
+      .claims-count {
+        text-align: center;
+        background: rgba(255,255,255,0.1);
+        border-radius: 8px;
+        padding: 12px;
+        margin: 15px 0;
+      }
+
+      .claims-count h4 {
+        margin: 0;
+        color: #4facfe;
+        font-size: 16px;
+      }
+
+      .result-card.enhanced .risk-indicator {
+        text-align: center;
+        font-size: 14px;
+        margin-bottom: 15px;
+        padding: 10px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 8px;
+      }
+
+      .result-card.enhanced .summary {
+        background: rgba(255,255,255,0.1);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+      }
+
+      .result-card.enhanced .summary p {
+        font-size: 13px;
+        line-height: 1.4;
+        color: #f8f9fa;
+        margin: 0;
+      }
+
+      .result-card.enhanced .blockchain-info {
+        background: rgba(40, 167, 69, 0.2);
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+      }
+
+      .result-card.enhanced .blockchain-info p {
+        font-size: 12px;
+        margin: 5px 0;
+        color: #f8f9fa;
+      }
+
+      .greenwashing-sin {
+        background: rgba(255, 193, 7, 0.1);
+        border-left: 4px solid #ffc107;
+        padding: 12px;
+        margin: 12px 0;
+        border-radius: 6px;
+      }
+
+      .greenwashing-sin h5 {
+        color: #f57c00;
+        margin-bottom: 8px;
+        font-size: 13px;
+      }
+
+      .greenwashing-sin p {
+        font-size: 11px;
+        margin-bottom: 6px;
+      }
+
+      .smart-criteria {
+        display: grid;
+        gap: 12px;
+        margin: 16px 0;
+      }
+
+      .criteria-item {
+        background: rgba(59, 130, 246, 0.1);
+        border-left: 4px solid #3b82f6;
+        padding: 12px;
+        border-radius: 6px;
+      }
+
+      .criteria-item h5 {
+        color: #1e40af;
+        margin-bottom: 8px;
+        font-size: 13px;
+      }
+
+      .criteria-letter {
+        background: #3b82f6;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: bold;
+        margin-right: 4px;
+      }
+
+      .certifications-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin: 16px 0;
+      }
+
+      .cert-item {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        padding: 12px;
+        border-radius: 8px;
+      }
+
+      .cert-item h5 {
+        color: #059669;
+        margin-bottom: 6px;
+        font-size: 12px;
+      }
+
+      .cert-item p {
+        font-size: 10px;
+        color: #065f46;
+      }
+
+      .case-study {
+        margin: 16px 0;
+        padding: 12px;
+        border-radius: 8px;
+      }
+
+      .case-study.negative {
+        background: rgba(239, 68, 68, 0.1);
+        border-left: 4px solid #ef4444;
+      }
+
+      .case-study.positive {
+        background: rgba(34, 197, 94, 0.1);
+        border-left: 4px solid #22c55e;
+      }
+
+      .case-study h5 {
+        font-size: 13px;
+        margin-bottom: 8px;
+      }
+
+      .case-study.negative h5 {
+        color: #dc2626;
+      }
+
+      .case-study.positive h5 {
+        color: #059669;
+      }
+
+      .case-study p {
+        font-size: 11px;
+        margin-bottom: 6px;
+      }
+
+      .resource-list {
+        display: grid;
+        gap: 12px;
+        margin: 16px 0;
+      }
+
+      .resource-item {
+        background: rgba(139, 92, 246, 0.1);
+        border-left: 4px solid #8b5cf6;
+        padding: 12px;
+        border-radius: 6px;
+      }
+
+      .resource-item h5 {
+        color: #7c3aed;
+        margin-bottom: 6px;
+        font-size: 12px;
+      }
+
+      .resource-item p {
+        font-size: 10px;
+      }
+
+      .question-checklist {
+        display: grid;
+        gap: 8px;
+        margin: 16px 0;
+      }
+
+      .question-checklist label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+      }
+
+      .question-checklist label:hover {
+        background: rgba(102, 126, 234, 0.1);
+      }
+
+      .question-checklist input[type="checkbox"] {
+        accent-color: #667eea;
+      }
+
+      @media (max-width: 400px) {
+        .header {
+          padding: 10px 12px;
+        }
+
+        .logo h1 {
+          font-size: 14px;
+        }
+
+        .tab-btn {
+          padding: 6px 8px;
+          font-size: 10px;
+        }
+
+        .content-area {
+          padding: 12px;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+          gap: 6px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+          padding: 8px;
+          font-size: 11px;
+        }
+
+        .btn {
+          padding: 10px 16px;
+          font-size: 11px;
+        }
+      }
+
+      @media (min-width: 600px) and (max-width: 1024px) {
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (min-width: 600px) {
+        .stats-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+
+        .tab-btn {
+          padding: 10px 16px;
+          font-size: 12px;
+        }
+
+        .logo h1 {
+          font-size: 18px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+          padding: 12px;
+          font-size: 13px;
+        }
+      }
+
+      @media (max-height: 500px) {
+        .header {
+          padding: 8px 12px;
+        }
+
+        .content-area {
+          padding: 12px;
+        }
+
+        .form-group {
+          margin-bottom: 12px;
+        }
+
+        .auth-container {
+          padding: 16px;
+        }
+      }
+
+      @media (min-height: 700px) {
+        .content-area {
+          padding: 20px;
+        }
+
+        .auth-container {
+          padding: 32px;
+        }
+
+        .form-group {
+          margin-bottom: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="popup-container">
+      <div class="header">
+        <div class="nav-container">
+          <div class="logo">
+            <span class="logo-icon">🛡️</span>
+            <h1>GreenGuard</h1>
+            <span class="ai-badge">AI-Powered</span>
+          </div>
+          <div class="user-info" id="userInfo" style="display: none">
+            <span id="userEmail"></span>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="authSection" style="display: none">
+        <div class="welcome-message">
+          <h2>Welcome to GreenGuard</h2>
+          <p>
+            Join the fight against greenwashing with AI-powered environmental
+            claim verification
+          </p>
+        </div>
+
+        <div class="auth-container">
+          <div id="signupFormContainer">
+            <h2 class="auth-title">Create Account</h2>
+            <form id="signupForm">
+              <div class="form-group">
+                <label for="signupEmail">Email Address</label>
+                <input
+                  type="email"
+                  id="signupEmail"
+                  name="email"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="signupPassword">Password</label>
+                <div class="password-input-container">
+                  <input
+                    type="password"
+                    id="signupPassword"
+                    name="password"
+                    placeholder="Create a password"
+                    required
+                  />
+                  <button type="button" class="password-toggle">👁️</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <div class="password-input-container">
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    placeholder="Confirm your password"
+                    required
+                  />
+                  <button type="button" class="password-toggle">👁️</button>
+                </div>
+              </div>
+              <button type="submit" class="btn">🚀 Create Account</button>
+            </form>
+            <div class="auth-switch">
+              Already have an account?
+              <a href="#" id="switchToSignin">Sign In</a>
+            </div>
+          </div>
+
+          <div id="signinFormContainer" style="display: none">
+            <h2 class="auth-title">Welcome Back</h2>
+            <form id="signinForm">
+              <div class="form-group">
+                <label for="signinEmail">Email Address</label>
+                <input
+                  type="email"
+                  id="signinEmail"
+                  name="email"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="signinPassword">Password</label>
+                <div class="password-input-container">
+                  <input
+                    type="password"
+                    id="signinPassword"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                  />
+                  <button type="button" class="password-toggle">👁️</button>
+                </div>
+              </div>
+              <button type="submit" class="btn">🔐 Sign In</button>
+            </form>
+            <div class="auth-switch">
+              Don't have an account? <a href="#" id="switchToSignup">Sign Up</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="dashboardSection" style="display: none">
+        <div class="tab-navigation">
+          <button class="tab-btn active" data-tab="analyzer">Analyzer</button>
+          <button class="tab-btn" data-tab="verification">Verify</button>
+          <button class="tab-btn" data-tab="education">Learn</button>
+          <button class="tab-btn" data-tab="community">Report</button>
+          <button class="tab-btn" data-tab="dashboard">Stats</button>
+        </div>
+
+        <div class="content-area">
+          <div id="analyzerTab" class="tab-content active">
+            <div class="analysis-section">
+              <h4>🌐 Website Analysis</h4>
+              <form id="websiteAnalysisForm">
+                <div class="form-group">
+                  <label for="websiteUrl">Company Website URL</label>
+                  <input
+                    type="url"
+                    id="websiteUrl"
+                    name="url"
+                    placeholder="https://company.com"
+                  />
+                  <button type="button" class="current-page-btn" id="analyzeCurrentPageBtn">
+                    📄 Analyze Current Page
+                  </button>
+                </div>
+                <button type="submit" class="btn">🔍 Analyze Website</button>
+              </form>
+              <div id="websiteAnalysisResults"></div>
+            </div>
+
+            <div class="analysis-section">
+              <h4>📝 Text Analysis</h4>
+              <form id="analysisForm">
+                <div class="form-group">
+                  <label for="analysisContent">Environmental Content to Analyze</label>
+                  <textarea
+                    id="analysisContent"
+                    name="content"
+                    placeholder="Paste environmental claims, company statements, or marketing content here."
+                  ></textarea>
+                </div>
+                <button type="submit" class="btn">🤖 Analyze Claims</button>
+              </form>
+              <div id="analysisResults"></div>
+            </div>
+          </div>
+
+          <div id="verificationTab" class="tab-content">
+            <form id="verificationForm">
+              <div class="form-group">
+                <label for="companyName">Company Name</label>
+                <input
+                  type="text"
+                  id="companyName"
+                  name="company"
+                  placeholder="Enter company name"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="claimText">Environmental Claim</label>
+                <textarea
+                  id="claimText"
+                  name="claim"
+                  placeholder="Paste any environmental claim to be verified"
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" class="btn">🔍 Verify Claim</button>
+            </form>
+            <div id="verificationResults"></div>
+          </div>
+
+          <div id="educationTab" class="tab-content">
+            <div class="education-content">
+              <h3>🎯 What is Greenwashing?</h3>
+              <p>
+                <strong>Greenwashing</strong> is a deceptive marketing practice where companies present themselves as environmentally responsible without making meaningful changes to their business practices. The term combines "green" (environmentally friendly) and "whitewashing" (concealing wrongdoing).
+              </p>
+              
+              <h4>📚 History of Greenwashing</h4>
+              <p>
+                The term was coined by environmentalist Jay Westerveld in 1986 when he criticized hotels asking guests to reuse towels "to save the environment" while the hotels made no other environmental efforts. Since then, greenwashing has evolved into sophisticated marketing campaigns.
+              </p>
+              
+              <h4>🌍 Why Companies Greenwash</h4>
+              <ul>
+                <li><strong>Consumer Demand:</strong> 73% of global consumers are willing to pay more for sustainable products</li>
+                <li><strong>Regulatory Pressure:</strong> Avoiding stricter environmental regulations</li>
+                <li><strong>Investment Appeal:</strong> Attracting ESG (Environmental, Social, Governance) investors</li>
+                <li><strong>Brand Image:</strong> Improving public perception and competitive advantage</li>
+                <li><strong>Cost Avoidance:</strong> Appearing green without expensive operational changes</li>
+              </ul>
+              
+              <h4>📊 The Impact of Greenwashing</h4>
+              <p>
+                Greenwashing undermines genuine environmental efforts, misleads consumers, and slows progress toward sustainability. Studies show that misleading environmental claims can delay real climate action by decades.
+              </p>
+            </div>
+
+            <div class="education-content">
+              <h3>🚨 Common Greenwashing Tactics</h3>
+              
+              <h4>🎭 The Seven Sins of Greenwashing</h4>
+              
+              <div class="greenwashing-sin">
+                <h5>1️⃣ Sin of the Hidden Trade-off</h5>
+                <p><strong>What it is:</strong> Suggesting a product is "green" based on one attribute while ignoring other environmental problems.</p>
+                <p><strong>Example:</strong> Paper products from sustainably harvested forests, but manufactured with chemicals that create air and water pollution.</p>
+                <p><strong>Red flags:</strong> Focus on single environmental benefit, ignoring lifecycle impact</p>
+              </div>
+              
+              <div class="greenwashing-sin">
+                <h5>2️⃣ Sin of No Proof</h5>
+                <p><strong>What it is:</strong> Claims that cannot be substantiated by easily accessible evidence or third-party certification.</p>
+                <p><strong>Example:</strong> Shampoos claiming to be "certified organic" without identifying certification body.</p>
+                <p><strong>Red flags:</strong> Vague certifications, no supporting data, missing third-party verification</p>
+              </div>
+              
+              <div class="greenwashing-sin">
+                <h5>3️⃣ Sin of Vagueness</h5>
+                <p><strong>What it is:</strong> Claims so poorly defined that their real meaning is likely misunderstood.</p>
+                <p><strong>Example:</strong> "All-natural" cigarettes or "eco-friendly" without specific metrics.</p>
+                <p><strong>Red flags:</strong> Undefined terms, no measurable standards, subjective language</p>
+              </div>
+              
+              <div class="greenwashing-sin">
+                <h5>4️⃣ Sin of Worshiping False Labels</h5>
+                <p><strong>What it is:</strong> Using words or images that give the impression of third-party endorsement where none exists.</p>
+                <p><strong>Example:</strong> Creating fake certification logos or using official-looking but meaningless seals.</p>
+                <p><strong>Red flags:</strong> Unrecognized certifications, self-created labels, misleading imagery</p>
+              </div>
+              
+              <div class="greenwashing-sin">
+                <h5>5️⃣ Sin of Irrelevance</h5>
+                <p><strong>What it is:</strong> Claims that may be truthful but are unimportant for consumers seeking environmentally preferable products.</p>
+                <p><strong>Example:</strong> "CFC-free" products when CFCs have been banned for decades.</p>
+                <p><strong>Red flags:</strong> Highlighting already-banned substances, irrelevant comparisons</p>
+              </div>
+              
+              <div class="greenwashing-sin">
+                <h5>6️⃣ Sin of the Lesser of Two Evils</h5>
+                <p><strong>What it is:</strong> Claims that may be true within the product category, but distract from greater environmental impacts.</p>
+                <p><strong>Example:</strong> "Eco-friendly" cigarettes or "fuel-efficient" SUVs.</p>
+                <p><strong>Red flags:</strong> Green claims about inherently harmful product categories</p>
+              </div>
+              
+              <div class="greenwashing-sin">
+                <h5>7️⃣ Sin of Fibbing</h5>
+                <p><strong>What it is:</strong> Environmental claims that are simply false.</p>
+                <p><strong>Example:</strong> Products falsely claiming Energy Star certification.</p>
+                <p><strong>Red flags:</strong> Easily verifiable false claims, fake certifications</p>
+              </div>
+
+              <h4>🔍 Advanced Greenwashing Techniques</h4>
+              <ul>
+                <li><strong>Astroturfing:</strong> Creating fake grassroots environmental movements</li>
+                <li><strong>Bluewashing:</strong> Partnering with UN Global Compact without changing practices</li>
+                <li><strong>Greenshifting:</strong> Blaming consumers for environmental problems</li>
+                <li><strong>Greencrowding:</strong> Moving with competitors to avoid standing out negatively</li>
+                <li><strong>Greenlighting:</strong> Selective disclosure of positive environmental data</li>
+              </ul>
+            </div>
+
+            <div class="education-content">
+              <h3>✅ How to Spot Authentic Sustainability</h3>
+              
+              <h4>🔬 The SMART Criteria for Environmental Claims</h4>
+              <div class="smart-criteria">
+                <div class="criteria-item">
+                  <h5><span class="criteria-letter">S</span>pecific</h5>
+                  <p>Claims should be precise and detailed, not vague or general.</p>
+                  <p><strong>Good:</strong> "Reduced CO2 emissions by 25% since 2020"</p>
+                  <p><strong>Bad:</strong> "Environmentally friendly"</p>
+                </div>
+                
+                <div class="criteria-item">
+                  <h5><span class="criteria-letter">M</span>easurable</h5>
+                  <p>Environmental benefits should be quantifiable with clear metrics.</p>
+                  <p><strong>Good:</strong> "Uses 40% less water than industry average"</p>
+                  <p><strong>Bad:</strong> "Water-saving technology"</p>
+                </div>
+                
+                <div class="criteria-item">
+                  <h5><span class="criteria-letter">A</span>chievable</h5>
+                  <p>Goals should be realistic and attainable within stated timeframes.</p>
+                  <p><strong>Good:</strong> "Net zero by 2050 with interim targets"</p>
+                  <p><strong>Bad:</strong> "100% sustainable immediately"</p>
+                </div>
+                
+                <div class="criteria-item">
+                  <h5><span class="criteria-letter">R</span>elevant</h5>
+                  <p>Claims should address material environmental impacts of the business.</p>
+                  <p><strong>Good:</strong> Airlines focusing on fuel efficiency</p>
+                  <p><strong>Bad:</strong> Airlines only promoting recycled napkins</p>
+                </div>
+                
+                <div class="criteria-item">
+                  <h5><span class="criteria-letter">T</span>ime-bound</h5>
+                  <p>Commitments should have clear deadlines and interim milestones.</p>
+                  <p><strong>Good:</strong> "50% renewable energy by 2025, 100% by 2030"</p>
+                  <p><strong>Bad:</strong> "Moving toward sustainability"</p>
+                </div>
+              </div>
+
+              <h4>🏆 Trusted Environmental Certifications</h4>
+              <div class="certifications-grid">
+                <div class="cert-item">
+                  <h5>🌟 Energy Star</h5>
+                  <p>Government-backed symbol for energy efficiency in electronics and appliances.</p>
+                </div>
+                
+                <div class="cert-item">
+                  <h5>🌱 USDA Organic</h5>
+                  <p>Strict standards for organic farming without synthetic pesticides or fertilizers.</p>
+                </div>
+                
+                <div class="cert-item">
+                  <h5>🏭 B Corporation</h5>
+                  <p>Certified benefit corporations meeting standards of social and environmental performance.</p>
+                </div>
+                
+                <div class="cert-item">
+                  <h5>🌊 Marine Stewardship Council</h5>
+                  <p>Certification for sustainable seafood and fishing practices.</p>
+                </div>
+                
+                <div class="cert-item">
+                  <h5>🌳 Forest Stewardship Council (FSC)</h5>
+                  <p>Promotes responsible management of world's forests.</p>
+                </div>
+                
+                <div class="cert-item">
+                  <h5>♻️ Cradle to Cradle</h5>
+                  <p>Assesses products across five quality categories for circular economy.</p>
+                </div>
+              </div>
+
+              <h4>🔍 Research Checklist</h4>
+              <ul>
+                <li>📊 <strong>Sustainability Reports:</strong> Annual reports with detailed environmental data</li>
+                <li>🎯 <strong>Science-Based Targets:</strong> Goals aligned with climate science (SBTi approval)</li>
+                <li>💰 <strong>Investment Transparency:</strong> How much money is actually spent on green initiatives</li>
+                <li>🔗 <strong>Supply Chain:</strong> Environmental practices throughout the value chain</li>
+                <li>📈 <strong>Progress Tracking:</strong> Regular updates on environmental goal achievement</li>
+                <li>🏛️ <strong>Policy Alignment:</strong> Public policy positions match environmental claims</li>
+                <li>👥 <strong>Stakeholder Engagement:</strong> Input from environmental groups and communities</li>
+              </ul>
+            </div>
+
+            <div class="education-content">
+              <h3>🌐 Real-World Examples</h3>
+              
+              <h4>🚫 Famous Greenwashing Cases</h4>
+              
+              <div class="case-study negative">
+                <h5>Case 1: Volkswagen "Clean Diesel" (2015)</h5>
+                <p><strong>The Claim:</strong> Marketed diesel vehicles as "clean" and environmentally friendly.</p>
+                <p><strong>The Reality:</strong> Used software to cheat emissions tests, actually producing up to 40x legal NOx limits.</p>
+                <p><strong>The Consequences:</strong> $33 billion in fines, criminal charges, massive brand damage.</p>
+                <p><strong>Lesson:</strong> Technology claims must be verifiable and honest.</p>
+              </div>
+              
+              <div class="case-study negative">
+                <h5>Case 2: H&M "Conscious Collection"</h5>
+                <p><strong>The Claim:</strong> Sustainable fashion line made from organic and recycled materials.</p>
+                <p><strong>The Reality:</strong> Only 20% of materials were sustainable; overall business model remained unsustainable.</p>
+                <p><strong>The Consequences:</strong> Ongoing criticism for fast fashion greenwashing.</p>
+                <p><strong>Lesson:</strong> Small green initiatives can't offset fundamentally unsustainable business models.</p>
+              </div>
+              
+              <div class="case-study negative">
+                <h5>Case 3: BP "Beyond Petroleum" (2000s)</h5>
+                <p><strong>The Claim:</strong> Rebranded as an energy company moving beyond oil.</p>
+                <p><strong>The Reality:</strong> Continued massive oil investments; renewable spending was less than 1% of budget.</p>
+                <p><strong>The Consequences:</strong> Criticism intensified after Deepwater Horizon spill.</p>
+                <p><strong>Lesson:</strong> Actions must match marketing messages.</p>
+              </div>
+
+              <h4>✅ Authentic Sustainability Leaders</h4>
+              
+              <div class="case-study positive">
+                <h5>Example 1: Patagonia</h5>
+                <p><strong>What they do:</strong> 1% for the Planet, repair services, supply chain transparency, activism.</p>
+                <p><strong>Why it's authentic:</strong> Business model built around durability; actively discourages overconsumption.</p>
+                <p><strong>Key practices:</strong> Lifetime repair guarantee, recycled materials, fair trade certification.</p>
+              </div>
+              
+              <div class="case-study positive">
+                <h5>Example 2: Interface Inc.</h5>
+                <p><strong>What they do:</strong> Mission Zero (eliminating environmental footprint by 2020), now Climate Take Back.</p>
+                <p><strong>Why it's authentic:</strong> Systematic approach covering all operations, third-party verified progress.</p>
+                <p><strong>Key practices:</strong> Carbon negative products, renewable energy, circular business model.</p>
+              </div>
+              
+              <div class="case-study positive">
+                <h5>Example 3: Unilever Sustainable Living Plan</h5>
+                <p><strong>What they do:</strong> Comprehensive sustainability strategy covering health, wellbeing, and environment.</p>
+                <p><strong>Why it's authentic:</strong> Science-based targets, transparent reporting, material business integration.</p>
+                <p><strong>Key practices:</strong> Sustainable sourcing, water conservation, waste reduction, social impact.</p>
+              </div>
+            </div>
+
+            <div class="education-content">
+              <h3>🛠️ Tools and Resources</h3>
+              
+              <h4>🔍 Verification Websites</h4>
+              <div class="resource-list">
+                <div class="resource-item">
+                  <h5>🌍 Climate Action Tracker</h5>
+                  <p>Tracks government climate action and corporate commitments against Paris Agreement goals.</p>
+                </div>
+                
+                <div class="resource-item">
+                  <h5>📊 CDP (Carbon Disclosure Project)</h5>
+                  <p>Global database of corporate environmental data and climate risk information.</p>
+                </div>
+                
+                <div class="resource-item">
+                  <h5>🏆 Science Based Targets Initiative</h5>
+                  <p>Validates corporate emissions reduction targets against climate science.</p>
+                </div>
+                
+                <div class="resource-item">
+                  <h5>💚 GoodGuide</h5>
+                  <p>Rates products on health, environmental, and social performance.</p>
+                </div>
+              </div>
+
+              <h4>📱 Mobile Apps</h4>
+              <ul>
+                <li><strong>HowGood:</strong> Food product impact scoring</li>
+                <li><strong>Think Dirty:</strong> Cosmetics ingredient safety</li>
+                <li><strong>Buycott:</strong> Product barcode scanning for ethical information</li>
+                <li><strong>Sustainable Brands App:</strong> Latest sustainability news and insights</li>
+              </ul>
+
+              <h4>📚 Educational Resources</h4>
+              <ul>
+                <li><strong>Greenwashing Index:</strong> Crowdsourced advertising evaluation</li>
+                <li><strong>Environmental Working Group:</strong> Consumer guides and databases</li>
+                <li><strong>Sustainable Brands Conference:</strong> Industry insights and best practices</li>
+                <li><strong>Business for Social Responsibility:</strong> Corporate sustainability guidance</li>
+              </ul>
+
+              <h4>❓ Key Questions to Ask</h4>
+              <div class="question-checklist">
+                <label><input type="checkbox"> Is the claim specific and measurable?</label>
+                <label><input type="checkbox"> Are there third-party certifications?</label>
+                <label><input type="checkbox"> Does the company publish detailed sustainability reports?</label>
+                <label><input type="checkbox"> Are environmental goals science-based?</label>
+                <label><input type="checkbox"> Is there transparency about challenges and failures?</label>
+                <label><input type="checkbox"> Does the company advocate for supportive environmental policies?</label>
+                <label><input type="checkbox"> Are supply chain partners held to environmental standards?</label>
+                <label><input type="checkbox"> Is there regular progress reporting with external verification?</label>
+              </div>
+            </div>
+
+            <div class="education-content">
+              <h3>🚀 Take Action</h3>
+              
+              <h4>💪 As a Consumer</h4>
+              <ul>
+                <li><strong>Research before buying:</strong> Use this extension and other tools to verify claims</li>
+                <li><strong>Support transparent companies:</strong> Reward businesses with verified sustainable practices</li>
+                <li><strong>Ask questions:</strong> Contact companies directly about their environmental claims</li>
+                <li><strong>Share knowledge:</strong> Educate friends and family about greenwashing</li>
+                <li><strong>Report misleading claims:</strong> Use our community reporting feature</li>
+              </ul>
+
+              <h4>📢 As an Advocate</h4>
+              <ul>
+                <li><strong>Social media awareness:</strong> Share verified information about greenwashing</li>
+                <li><strong>Support legislation:</strong> Advocate for stricter environmental advertising standards</li>
+                <li><strong>Join organizations:</strong> Participate in environmental advocacy groups</li>
+                <li><strong>Engage with companies:</strong> Attend shareholder meetings and ask tough questions</li>
+              </ul>
+
+              <h4>🏢 As a Business Professional</h4>
+              <ul>
+                <li><strong>Implement authentic practices:</strong> Focus on real environmental improvements</li>
+                <li><strong>Transparent communication:</strong> Be honest about both successes and challenges</li>
+                <li><strong>Third-party verification:</strong> Seek independent validation of environmental claims</li>
+                <li><strong>Stakeholder engagement:</strong> Include environmental groups in sustainability planning</li>
+              </ul>
+
+              <h4>🌱 Building a Sustainable Future</h4>
+              <p>
+                Every action counts in the fight against greenwashing. By staying informed, asking critical questions, 
+                and supporting authentic sustainability efforts, we can create a more transparent and truly 
+                sustainable economy. Remember: the goal isn't perfection, but honest progress and continuous improvement.
+              </p>
+            </div>
+          </div>
+
+          <div id="communityTab" class="tab-content">
+            <form id="communityForm">
+              <div class="form-group">
+                <label for="reportType">Report Type</label>
+                <select id="reportType" name="type" required>
+                  <option value="">Select type...</option>
+                  <option value="greenwashing">Suspected Greenwashing</option>
+                  <option value="misleading_claim">
+                    Misleading Environmental Claim
+                  </option>
+                  <option value="false_certification">
+                    False Certification
+                  </option>
+                  <option value="other">Other Environmental Concern</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="reportCompany">Company/Brand</label>
+                <input
+                  type="text"
+                  id="reportCompany"
+                  name="company"
+                  placeholder="Company name"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="reportDescription">Description</label>
+                <textarea
+                  id="reportDescription"
+                  name="description"
+                  placeholder="Describe the environmental claim or concern..."
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" class="btn">📝 Submit Report</button>
+            </form>
+          </div>
+
+          <div id="dashboardTab" class="tab-content">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-number" id="claimsAnalyzed">0</div>
+                <div class="stat-label">Claims Analyzed</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-number" id="companiesVerified">0</div>
+                <div class="stat-label">Companies Verified</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-number" id="websitesAnalyzed">0</div>
+                <div class="stat-label">Websites Analyzed</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-number" id="communityReports">0</div>
+                <div class="stat-label">Community Reports</div>
+              </div>
+            </div>
+
+            <div class="education-content">
+              <h3>📊 Your Impact</h3>
+              <p>
+                Every analysis and verification helps build a more transparent
+                and sustainable future. Thank you for being part of the
+                GreenGuard community!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="popup-ui.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

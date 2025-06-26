@@ -24,12 +24,12 @@
     }
   ],
   "action": {
-    "default_popup": "popup/popup.html",
+    "default_popup": "popup.html",
     "default_title": "GreenGuard - Detect Greenwashing"
   },
   "web_accessible_resources": [
     {
-      "resources": ["popup/*"],
+      "resources": ["*"],
       "matches": ["<all_urls>"]
     }
   ]

@@ -1,9 +1,10 @@
-GreenGuard is an AI-powered browser extension that detects, analyzes, and verifies corporate environmental claims in real-time.  it empowers consumers to make informed sustainable choices by identifying greenwashing tactics and providing verified environmental information at the point of decision-making.
+GreenGuard is an AI-powered browser extension that detects by analyzes, and
+verifies corporate environmental claims in real-time.  it empowers consumers to make informed sustainable choices by identifying greenwashing tactics and providing verified environmental information at the point of decision-making.
 
 Key Features
 AI-Powered Detection uses Advanced NLP algorithms detect environmental claims and assess greenwashing risk,
-Real-Time Analysis Instant processing of web content as users browse, 
-Claim Verification Cross-references claims with multiple environmental data sources, 
+Real-Time Analysis Instant processing of web content as users browse,
+Claim Verification Cross-references claims with multiple environmental data sources,
 Community Platform User-driven reporting and verification system,
 Live Analytics Real-time statistics tracking user engagement and system performance,
 Educational Content: Comprehensive resources about greenwashing tactics and sustainability,
@@ -30,11 +31,11 @@ Step 2:
 cd backend
 python -m venv venv
 
- Activate virtual environment
- On Windows
+Activate virtual environment
+On Windows
 venv\Scripts\activate
 
- On Mac/Linux
+On Mac/Linux
 source venv/bin/activate
 
 Install dependencies
@@ -97,3 +98,9 @@ Designs:
 ![](designs/screenshots/actual-Stats-dashboard.png.png)
 
 ![](designs/figma/Untitled.png)
+
+Video Link:
+<https://youtu.be/0_RGw42t3P0>
+
+Repository link:
+<https://github.com/Islam-19984/Lastyear_capstone/tree/main/greenguard-mvp>
