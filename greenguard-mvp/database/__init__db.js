@@ -6,7 +6,7 @@ db.verifications.drop();
 db.user_submissions.drop();
 db.alternatives.drop();
 
-print("📁 Creating collections...");
+print(" Creating collections...");
 
 db.createCollection("companies", {
   validator: {
@@ -75,7 +75,7 @@ db.user_submissions.createIndex({ "credibility_score": -1 });
 db.alternatives.createIndex({ "original_company_id": 1 });
 db.alternatives.createIndex({ "recommendation_confidence": -1 });
 
-print("🏢 Inserting sample companies...");
+print(" Inserting sample companies...");
 
 db.companies.insertMany([
   {
@@ -155,7 +155,7 @@ db.companies.insertMany([
   }
 ]);
 
-print("📝 Inserting sample claims...");
+print(" Inserting sample claims...");
 
 db.claims.insertMany([
   {
@@ -190,7 +190,7 @@ db.claims.insertMany([
   }
 ]);
 
-print("✅ Inserting sample verifications...");
+print(" Inserting sample verifications...");
 
 db.verifications.insertMany([
   {
@@ -229,7 +229,7 @@ db.verifications.insertMany([
   }
 ]);
 
-print("🔄 Inserting sample alternatives...");
+print(" Inserting sample alternatives...");
 
 db.alternatives.insertMany([
   {
@@ -253,22 +253,22 @@ db.alternatives.insertMany([
   }
 ]);
 
-print("🔍 Verifying data insertion...");
+print(" Verifying data insertion...");
 
 print("Companies inserted: " + db.companies.countDocuments());
 print("Claims inserted: " + db.claims.countDocuments());
 print("Verifications inserted: " + db.verifications.countDocuments());
 print("Alternatives inserted: " + db.alternatives.countDocuments());
 
-print("🧪 Testing sample queries...");
+print(" Testing sample queries...");
 
 print("High-risk claims: " + db.claims.countDocuments({"greenwashing_risk": {"$gte": 0.7}}));
 print("Verified companies: " + db.companies.countDocuments({"sustainability_scores.overall_score": {"$gte": 0.8}}));
 
-print("✅ Database initialization completed successfully!");
-print("🚀 GreenGuard database is ready for use!");
+print(" Database initialization completed successfully!");
+print(" GreenGuard database is ready for use!");
 
-print("\n📊 Database Statistics:");
+print("\n Database Statistics:");
 print("Database: " + db.getName());
 print("Collections: " + db.getCollectionNames().length);
 print("Total documents: " + (
@@ -279,5 +279,5 @@ print("Total documents: " + (
   db.alternatives.countDocuments()
 ));
 
-print("\n🔗 MongoDB Connection String:");
+print("\n MongoDB Connection String:");
 print("mongodb://localhost:27017/greenguard_db");

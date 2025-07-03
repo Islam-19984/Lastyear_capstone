@@ -191,7 +191,7 @@ async function handleClaimAnalysis(data, sendResponse, sender) {
     if (cache.has(cacheKey)) {
       const cached = cache.get(cacheKey);
       if (Date.now() - cached.timestamp < CACHE_DURATION) {
-        console.log('✅ Returning cached analysis result');
+        console.log(' Returning cached analysis result');
         sendResponse({ success: true, data: cached.data });
         return;
       }
@@ -214,7 +214,7 @@ async function handleClaimAnalysis(data, sendResponse, sender) {
     }
     
     const result = await response.json();
-    console.log('✅ Analysis result from Flask:', result);
+    console.log(' Analysis result from Flask:', result);
     
     cache.set(cacheKey, {
       data: result,
