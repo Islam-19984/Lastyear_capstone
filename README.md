@@ -92,3 +92,7 @@ Contact: [islamomar2095@gmail.com]
 Join the fight against greenwashing with GreenGuard
 
 Every verified claim and reported case helps build a more transparent, sustainable future.
+
+video link: <https://youtu.be/xPr6uuZw5es>
+
+GitHub Link: <https://github.com/Islam-19984/Lastyear_capstone.git>
