@@ -2,7 +2,6 @@ services:
   - type: web
     name: greenguard-backend
     runtime: python
-    pythonVersion: "3.11.9"
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn --bind=0.0.0.0:10000 app:app"
     env: python
