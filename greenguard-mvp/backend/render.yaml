@@ -1,10 +1,9 @@
 services:
   - type: web
     name: greenguard-backend
-    runtime: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn --bind=0.0.0.0:10000 app:app"
-    env: python
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: FLASK_ENV
         value: production
