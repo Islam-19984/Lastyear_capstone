@@ -2704,4 +2704,6 @@ if __name__ == "__main__":
                 "Certification Verification, "
                 "Emissions Cross-Reference, Third-party Database Integration")
 
+    if __name__ == "__main__":
     app.run(host=host, port=port, debug=debug)
+    
