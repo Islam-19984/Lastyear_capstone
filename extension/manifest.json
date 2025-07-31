@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "GreenGuard - AI Environmental Claim Verification",
+  "version": "1.0.1",
+  "description": "AI-powered platform to detect greenwashing, verify environmental claims, and promote climate awareness",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "GreenGuard - Detect Greenwashing"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["*.css", "*.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Python: Flask Debug",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder}/backend/app.py",
+        "env": {
+          "FLASK_ENV": "development",
+          "FLASK_DEBUG": "1",
+          "PYTHONPATH": "${workspaceFolder}/backend"
+        },
+        "args": [],
+        "jinja": true,
+        "justMyCode": true,
+        "console": "integratedTerminal",
+        "cwd": "${workspaceFolder}/backend",
+        "stopOnEntry": false,
+        "redirectOutput": true
+      },
+      {
+        "name": "Python: Current File",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${file}",
+        "console": "integratedTerminal",
+        "justMyCode": true,
+        "cwd": "${workspaceFolder}/backend"
+      },
+      {
+        "name": "Python: Flask Production",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder}/backend/app.py",
+        "env": {
+          "FLASK_ENV": "production",
+          "FLASK_DEBUG": "0",
+          "PYTHONPATH": "${workspaceFolder}/backend"
+        },
+        "args": [],
+        "jinja": false,
+        "justMyCode": true,
+        "console": "integratedTerminal",
+        "cwd": "${workspaceFolder}/backend"
+      },
+      {
+        "name": "Python: Test Suite",
+        "type": "debugpy",
+        "request": "launch",
+        "module": "pytest",
+        "args": [
+          "tests/",
+          "-v",
+          "--tb=short"
+        ],
+        "console": "integratedTerminal",
+        "justMyCode": true,
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}/backend"
+        }
+      }
+    ]
+  }
